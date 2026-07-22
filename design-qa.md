@@ -1,41 +1,42 @@
-# Hero design QA
+# Design QA - compact cargo types and route motion
 
-## Visual controls
+Дата: 2026-07-22
 
-- Desktop reference: `references/approved-desktop-hero.png`.
-- Mobile reference: `references/approved-mobile-hero.png`.
-- Tested implementation: real HTML header, CTA, menu, contacts and dialog over clean scene assets derived from the approved references.
-- Typography: locally hosted Golos Text for interface copy and IBM Plex Mono for technical labels, routes and numbers.
+## Источники сравнения
 
-## Captured states
+- `references/approved-section-example.png`
+- `references/approved-key-component-route.png`
+- `references/approved-homepage-desktop.png`
+- `references/approved-homepage-mobile.png`
+- `docs/design-spec.md`
 
-| Viewport | Result |
-|---|---|
-| 1440 x 900 | Passed: header, left text zone, right China-Russia scene and CTA remain in the first screen. |
-| 1294 x 920 | Passed: Golos Text keeps the H1 to four lines and desktop navigation to one line. |
-| 390 x 844 | Passed: mobile header, shortened approved copy, primary CTA and mobile scene are visible without horizontal scrolling. |
-| 320, 768, 1024, 1280 px | Passed: no horizontal scrolling; the header switches to call plus menu where the full desktop navigation would not fit. |
+## Проверка
 
-## Interaction checks
+- Категории грузов: фотографии заменены компактной серией локальных линейных иконок в общей технической стилистике.
+- Процесс: заголовок сокращён до «Маршрут под ключ», шесть этапов сохранены и собраны в единую линию с контрольными точками.
+- Этапы и иконки последовательно проявляются через animejs. После появления inline-стили очищаются, поэтому hover-состояния работают независимо от motion.
+- На desktop маршрут собран в сетку 3x2, на mobile становится вертикальной линией без горизонтального переполнения.
+- Контакты сокращены до двух телефонов, email и кнопок WhatsApp, Telegram, WeChat.
+- Блоки оформления, предварительного расчёта и финальный CTA удалены по прямому решению пользователя.
+- Hero, галерея реальных грузов, способы доставки, FAQ, формы, аналитика и legal не изменялись.
+- `prefers-reduced-motion` отключает параллакс и показывает контент без анимации.
 
-- Primary hero CTA opens the accessible contact dialog.
-- Dialog closes by its visible close button and backdrop click.
-- Mobile menu opens, closes with Escape and restores scroll state.
-- Telephone controls use real `tel:` links.
-- The form never reports success: until the server phase it clearly states that no request has been sent.
+## Исправленные расхождения
 
-## Web interface checks
+- Категорийные плитки уменьшены до 13 rem на desktop и 12.5 rem на mobile.
+- Для категорий и этапов применена одна локальная SVG-система Phosphor без внешних запросов.
+- Добавлены hover-подъём, акцентная рамка, подсветка контрольной точки и направленное движение иконки.
+- Убраны устаревшие якоря удалённых секций из desktop и mobile меню.
 
-- Decorative scene images have empty `alt`; controls have accessible names.
-- Header, navigation, main, heading hierarchy, labels, visible focus, skip link and `aria-live` status are present.
-- Motion uses only opacity and transforms. `prefers-reduced-motion` disables it.
-- Mobile menu and dialog contain overscroll; touch feedback and safe-area padding are defined.
+## Проверенные размеры
 
-## Known phase boundaries
+- 320x844
+- 390x844
+- 768x900
+- 1024x900
+- 1440x900
+- 1920x1080
 
-- Navigation links lead to sections that will be created in the next static-site phase.
-- Server delivery, file upload, analytics, cookie consent and legal pages are intentionally not implemented at the hero checkpoint.
+## Результат
 
-## Final result
-
-**passed - hero checkpoint only**
+final result: passed

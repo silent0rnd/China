@@ -45,6 +45,17 @@ describe('hero checkpoint', () => {
     expect(styles).toContain('@media (prefers-reduced-motion: reduce)')
   })
 
+  it('keeps the compact icon categories and simplified post-hero structure', () => {
+    expect(page).toContain('/icons/bulldozer.svg')
+    expect(page).toContain('/icons/shipping-container.svg')
+    expect(page).toContain('Маршрут под ключ')
+    expect(page).toContain('<h2 id="contacts-title">Контакты</h2>')
+    expect(page).not.toContain('id="clearance"')
+    expect(page).not.toContain('id="calculation"')
+    expect(page).not.toContain('id="final-cta"')
+    expect(page).not.toContain('class="terminal-list"')
+  })
+
   it('builds relative assets and deploys only the Vite output to GitHub Pages', () => {
     expect(viteConfig).toContain("base: './'")
     expect(pagesWorkflow).toContain('actions/configure-pages@v5')
