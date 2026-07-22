@@ -1,9 +1,10 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 const page = readFileSync(new URL('../../index.html', import.meta.url), 'utf8')
 const viteConfig = readFileSync(new URL('../../vite.config.js', import.meta.url), 'utf8')
 const pagesWorkflow = readFileSync(new URL('../../.github/workflows/deploy-pages.yml', import.meta.url), 'utf8')
+const conflictingPagesWorkflow = new URL('../../.github/workflows/static.yml', import.meta.url)
 
 describe('hero checkpoint', () => {
   it('keeps the approved hero copy and primary CTA', () => {
@@ -27,5 +28,6 @@ describe('hero checkpoint', () => {
     expect(pagesWorkflow).toContain('run: npm run build')
     expect(pagesWorkflow).toContain('path: ./dist')
     expect(pagesWorkflow).toContain('actions/deploy-pages@v4')
+    expect(existsSync(conflictingPagesWorkflow)).toBe(false)
   })
 })
