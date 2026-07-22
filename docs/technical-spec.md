@@ -51,7 +51,7 @@ supersedes: none
 - CSS с custom properties;
 - модульный JavaScript без React и других UI-фреймворков;
 - anime.js как единственная основная motion-библиотека;
-- локальные WOFF2-шрифты Manrope и IBM Plex Mono;
+- локальные WOFF2-шрифты Golos Text и IBM Plex Mono;
 - SVG для интерфейсных иконок;
 - AVIF/WebP с fallback при необходимости.
 
@@ -382,7 +382,7 @@ Telegram может быть добавлен как резервный адап
 - AVIF/WebP с fallback при необходимости;
 - `loading="lazy"` для некритичных изображений;
 - hero image не lazy;
-- preload только hero и критичного начертания Manrope;
+- preload только hero и критичного начертания Golos Text;
 - width/height или aspect-ratio у медиа;
 - анимации только transform и opacity, где возможно;
 - `prefers-reduced-motion` обязателен;

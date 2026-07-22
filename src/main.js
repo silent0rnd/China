@@ -9,7 +9,12 @@ const dialogTitle = document.querySelector('#lead-dialog-title')
 const dialogCloseButton = document.querySelector('[data-lead-close]')
 const leadForm = document.querySelector('[data-lead-form]')
 const leadStatus = document.querySelector('[data-lead-status]')
+const lightbox = document.querySelector('#cargo-lightbox')
+const lightboxImage = document.querySelector('[data-lightbox-image]')
+const lightboxCaption = document.querySelector('[data-lightbox-caption]')
+const lightboxCloseButton = document.querySelector('[data-lightbox-close]')
 let lastFocusedElement = null
+let lastLightboxFocusedElement = null
 
 function initHeroMotion() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -57,6 +62,21 @@ function closeLeadDialog() {
   dialog.close()
 }
 
+function openLightbox(trigger) {
+  if (!lightbox || !lightboxImage || !lightboxCaption) return
+  lastLightboxFocusedElement = trigger
+  lightboxImage.src = trigger.dataset.lightboxSrc || ''
+  lightboxImage.alt = trigger.dataset.lightboxAlt || ''
+  lightboxCaption.textContent = trigger.dataset.lightboxAlt || ''
+  lightbox.showModal()
+  lightboxCloseButton?.focus()
+}
+
+function closeLightbox() {
+  if (!lightbox?.open) return
+  lightbox.close()
+}
+
 menuButton?.addEventListener('click', () => {
   const isOpen = menuButton.getAttribute('aria-expanded') === 'true'
   if (isOpen) closeMenu()
@@ -67,6 +87,8 @@ closeMenuButton?.addEventListener('click', () => closeMenu())
 mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => closeMenu({ returnFocus: false })))
 document.querySelectorAll('[data-lead-open]').forEach((trigger) => trigger.addEventListener('click', () => openLeadDialog(trigger)))
 dialogCloseButton?.addEventListener('click', closeLeadDialog)
+document.querySelectorAll('[data-lightbox-src]').forEach((trigger) => trigger.addEventListener('click', () => openLightbox(trigger)))
+lightboxCloseButton?.addEventListener('click', closeLightbox)
 
 dialog?.addEventListener('click', (event) => {
   if (event.target === dialog) closeLeadDialog()
@@ -75,6 +97,18 @@ dialog?.addEventListener('click', (event) => {
 dialog?.addEventListener('close', () => {
   lastFocusedElement?.focus()
   lastFocusedElement = null
+})
+
+lightbox?.addEventListener('click', (event) => {
+  if (event.target === lightbox) closeLightbox()
+})
+
+lightbox?.addEventListener('close', () => {
+  lightboxImage?.removeAttribute('src')
+  lightboxImage?.removeAttribute('alt')
+  lightboxCaption.textContent = ''
+  lastLightboxFocusedElement?.focus()
+  lastLightboxFocusedElement = null
 })
 
 leadForm?.addEventListener('submit', (event) => {

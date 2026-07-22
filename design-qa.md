@@ -5,12 +5,14 @@
 - Desktop reference: `references/approved-desktop-hero.png`.
 - Mobile reference: `references/approved-mobile-hero.png`.
 - Tested implementation: real HTML header, CTA, menu, contacts and dialog over clean scene assets derived from the approved references.
+- Typography: locally hosted Golos Text for interface copy and IBM Plex Mono for technical labels, routes and numbers.
 
 ## Captured states
 
 | Viewport | Result |
 |---|---|
 | 1440 x 900 | Passed: header, left text zone, right China-Russia scene and CTA remain in the first screen. |
+| 1294 x 920 | Passed: Golos Text keeps the H1 to four lines and desktop navigation to one line. |
 | 390 x 844 | Passed: mobile header, shortened approved copy, primary CTA and mobile scene are visible without horizontal scrolling. |
 | 320, 768, 1024, 1280 px | Passed: no horizontal scrolling; the header switches to call plus menu where the full desktop navigation would not fit. |
 

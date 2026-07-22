@@ -19,6 +19,17 @@ describe('hero checkpoint', () => {
     expect(page).not.toContain('hero__semantic-layer')
   })
 
+  it('loads the approved local Golos Text and IBM Plex Mono font files', () => {
+    const styles = readFileSync(new URL('../../src/styles/main.css', import.meta.url), 'utf8')
+    expect(page).toContain('preload" href="/fonts/golos-text-cyrillic.woff2"')
+    expect(styles).toContain("font-family: 'Golos Text'")
+    expect(styles).toContain("font-family: 'IBM Plex Mono'")
+    expect(existsSync(new URL('../../public/fonts/golos-text-cyrillic.woff2', import.meta.url))).toBe(true)
+    expect(existsSync(new URL('../../public/fonts/ibm-plex-mono-500-cyrillic.woff2', import.meta.url))).toBe(true)
+    expect(existsSync(new URL('../../public/fonts/OFL-Golos-Text.txt', import.meta.url))).toBe(true)
+    expect(existsSync(new URL('../../public/fonts/OFL-IBM-Plex.txt', import.meta.url))).toBe(true)
+  })
+
   it('contains accessible menu and lead-dialog controls', () => {
     expect(page).toContain('aria-controls="mobile-menu"')
     expect(page).toContain('id="lead-dialog"')

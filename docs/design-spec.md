@@ -220,24 +220,24 @@ supersedes: none
 
 ### Шрифты
 
-- Primary: `Manrope`, fallback `Arial`, `sans-serif`.
+- Primary: `Golos Text`, fallback `Arial`, `sans-serif`.
 - Technical labels and route numbers: `IBM Plex Mono`, fallback `Consolas`, `monospace`.
 - Оба шрифта должны загружаться локально или через разрешённый источник с поддержкой кириллицы.
 
 | Стиль | Font family | Desktop | Mobile | Weight | Line-height | Letter-spacing | Max line length |
 |---|---|---:|---:|---:|---:|---:|---:|
-| Display | Manrope | 80 px | 48 px | 500 | 1.02 | -0.035em | 12 слов |
-| H1 | Manrope | clamp(52px, 4.2vw, 76px) | clamp(38px, 10vw, 50px) | 500 | 1.05 | -0.03em | 4 строки |
-| H2 | Manrope | 52 px | 36 px | 500 | 1.08 | -0.025em | 3 строки |
-| H3 | Manrope | 32 px | 26 px | 500 | 1.15 | -0.015em | 3 строки |
-| H4 | Manrope | 22 px | 20 px | 600 | 1.25 | -0.01em | 3 строки |
-| Body large | Manrope | 20 px | 18 px | 400 | 1.55 | 0 | 64 знака |
-| Body | Manrope | 16 px | 16 px | 400 | 1.6 | 0 | 72 знака |
-| Body small | Manrope | 14 px | 14 px | 400 | 1.55 | 0 | 72 знака |
-| Caption | Manrope | 12 px | 12 px | 400 | 1.45 | 0.01em | 2 строки |
-| Button | Manrope | 15 px | 16 px | 500 | 1 | 0 | 1 строка |
+| Display | Golos Text | 80 px | 48 px | 500 | 1.02 | -0.035em | 12 слов |
+| H1 | Golos Text | clamp(52px, 4.2vw, 76px) | clamp(38px, 10vw, 50px) | 500 | 1.05 | -0.035em | 4 строки |
+| H2 | Golos Text | 52 px | 36 px | 500 | 1.08 | -0.025em | 3 строки |
+| H3 | Golos Text | 32 px | 26 px | 500 | 1.15 | -0.015em | 3 строки |
+| H4 | Golos Text | 22 px | 20 px | 600 | 1.25 | -0.01em | 3 строки |
+| Body large | Golos Text | 20 px | 18 px | 400 | 1.55 | 0 | 64 знака |
+| Body | Golos Text | 16 px | 16 px | 400 | 1.6 | 0 | 72 знака |
+| Body small | Golos Text | 14 px | 14 px | 400 | 1.55 | 0 | 72 знака |
+| Caption | Golos Text | 12 px | 12 px | 400 | 1.45 | 0.01em | 2 строки |
+| Button | Golos Text | 15 px | 16 px | 500 | 1 | 0 | 1 строка |
 | Label | IBM Plex Mono | 12 px | 11 px | 500 | 1.4 | 0.08em | 1-2 строки |
-| Price | Manrope | 32 px | 28 px | 500 | 1.1 | -0.02em | 1 строка |
+| Price | Golos Text | 32 px | 28 px | 500 | 1.1 | -0.02em | 1 строка |
 | Number | IBM Plex Mono | 42 px | 32 px | 400 | 1 | -0.02em | 1 строка |
 
 Не использовать сверхжирные начертания 700-900. Холодный характер создаётся масштабом, воздухом и контрастом, а не тяжёлым жирным шрифтом.

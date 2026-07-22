@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#07090B" />
     <meta name="description" content="Доставка спецтехники, тяжёлых и негабаритных грузов, оборудования и контейнеров из Китая в Россию. Индивидуальный расчёт маршрута и стоимости." />
+    <link rel="preload" href="/fonts/golos-text-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
     <title>Доставка спецтехники и негабаритных грузов из Китая | Горизонт</title>
   </head>
   <body>
@@ -54,7 +55,170 @@
           <p class="hero__hint">Отправьте маршрут, фотографию или спецификацию груза. Окончательная стоимость определяется после проверки параметров.</p>
         </div>
       </section>
+
+      <section class="section cargo-section" id="cargo" aria-labelledby="cargo-title">
+        <div class="section__container cargo-section__layout">
+          <div class="section__intro">
+            <p class="section-kicker"><span aria-hidden="true"></span>Реальные перевозки</p>
+            <h2 id="cargo-title">Реальные грузы и погрузка</h2>
+            <p class="section__lead">Фотографии техники, оборудования и грузов из рабочих перевозок. Без вымышленных маршрутов, сроков и результатов.</p>
+            <p>Для каждого крупного или нестандартного груза способ перевозки определяется после проверки веса, габаритов, маршрута и требований к оформлению.</p>
+            <button class="button button--outline" type="button" data-lead-open data-lead-title="Рассчитать перевозку похожего груза">Рассчитать перевозку похожего груза <span aria-hidden="true">→</span></button>
+          </div>
+          <div class="cargo-gallery" aria-label="Фотографии грузов и погрузки">
+            <button class="cargo-card cargo-card--tall" type="button" data-lightbox-src="/images/cargo-tracked-vehicle-container.jpg" data-lightbox-alt="Гусеничная техника, закреплённая в транспортном кузове">
+              <img src="/images/cargo-tracked-vehicle-container.jpg" alt="Гусеничная техника, закреплённая в транспортном кузове" width="1200" height="1600" loading="lazy" decoding="async" />
+              <span>Техника в транспортном кузове</span>
+            </button>
+            <button class="cargo-card cargo-card--wide" type="button" data-lightbox-src="/images/cargo-tracked-vehicle-platform.jpg" data-lightbox-alt="Гусеничная техника на автомобильной платформе">
+              <img src="/images/cargo-tracked-vehicle-platform.jpg" alt="Гусеничная техника на автомобильной платформе" width="664" height="498" loading="lazy" decoding="async" />
+              <span>Гусеничная техника на погрузке</span>
+            </button>
+            <button class="cargo-card" type="button" data-lightbox-src="/images/cargo-mini-excavator-container.jpeg" data-lightbox-alt="Мини-экскаватор в контейнере">
+              <img src="/images/cargo-mini-excavator-container.jpeg" alt="Мини-экскаватор в контейнере" width="768" height="1024" loading="lazy" decoding="async" />
+              <span>Мини-экскаватор в контейнере</span>
+            </button>
+            <button class="cargo-card" type="button" data-lightbox-src="/images/cargo-all-terrain-container.jpg" data-lightbox-alt="Вездеход в контейнере">
+              <img src="/images/cargo-all-terrain-container.jpg" alt="Вездеход в контейнере" width="960" height="960" loading="lazy" decoding="async" />
+              <span>Вездеход в контейнере</span>
+            </button>
+            <button class="cargo-card" type="button" data-lightbox-src="/images/cargo-road-roller-container.jpeg" data-lightbox-alt="Дорожная техника в контейнере">
+              <img src="/images/cargo-road-roller-container.jpeg" alt="Дорожная техника в контейнере" width="768" height="1024" loading="lazy" decoding="async" />
+              <span>Дорожная техника в контейнере</span>
+            </button>
+            <button class="cargo-card cargo-card--wide" type="button" data-lightbox-src="/images/cargo-vehicles-container.jpeg" data-lightbox-alt="Техника, размещённая в контейнере">
+              <img src="/images/cargo-vehicles-container.jpeg" alt="Техника, размещённая в контейнере" width="1280" height="960" loading="lazy" decoding="async" />
+              <span>Техника, размещённая в контейнере</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section cargo-types" id="cargo-types" aria-labelledby="cargo-types-title">
+        <div class="section__container">
+          <p class="section-kicker"><span aria-hidden="true"></span>Основные направления</p>
+          <h2 id="cargo-types-title">Перевозим крупные и сложные грузы из Китая</h2>
+          <p class="section__lead section__lead--wide">Способ доставки и оформление подбираются после проверки характеристик груза и маршрута.</p>
+          <div class="cargo-types__grid">
+            <article class="cargo-type cargo-type--machine">
+              <div class="cargo-type__image" aria-hidden="true"><img src="/images/cargo-mini-excavator-container.jpeg" alt="" width="768" height="1024" loading="lazy" decoding="async" /></div>
+              <div class="cargo-type__content"><h3>Спецтехника</h3><p>Гусеничная и колёсная техника, мини-экскаваторы и другие машины, для которых важны габариты, размещение и способ погрузки.</p></div>
+            </article>
+            <article class="cargo-type cargo-type--heavy">
+              <div class="cargo-type__image" aria-hidden="true"><img src="/images/cargo-heavy-wheel-loading.jpg" alt="" width="960" height="1280" loading="lazy" decoding="async" /></div>
+              <div class="cargo-type__content"><h3>Тяжёлые и негабаритные грузы</h3><p>Грузы, для которых требуется индивидуальная проверка размеров, веса, маршрута и транспорта.</p></div>
+            </article>
+            <article class="cargo-type cargo-type--equipment">
+              <div class="cargo-type__image" aria-hidden="true"><img src="/images/cargo-tracked-vehicle-warehouse.jpg" alt="" width="1200" height="1600" loading="lazy" decoding="async" /></div>
+              <div class="cargo-type__content"><h3>Промышленное оборудование</h3><p>Станки, крупные узлы, элементы оборудования и другие B2B-грузы.</p></div>
+            </article>
+            <article class="cargo-type cargo-type--container">
+              <div class="cargo-type__image" aria-hidden="true"><img src="/images/cargo-road-roller-container.jpeg" alt="" width="768" height="1024" loading="lazy" decoding="async" /></div>
+              <div class="cargo-type__content"><h3>Отдельные контейнеры</h3><p>Контейнеры 20 и 40 футов с доставкой до терминала или конечного адреса.</p></div>
+            </article>
+          </div>
+          <div class="section__footer-line"><p>Также доступны сборные грузы от 100 кг.</p><button class="text-action" type="button" data-lead-open data-lead-title="Уточнить возможность перевозки">Уточнить возможность перевозки <span aria-hidden="true">→</span></button></div>
+        </div>
+      </section>
+
+      <section class="section route-section" id="process" aria-labelledby="process-title">
+        <div class="section__container">
+          <div class="route-section__head">
+            <p class="section-kicker"><span aria-hidden="true"></span>Как работаем</p>
+            <h2 id="process-title">Один процесс от поставщика в Китае до точки назначения в России</h2>
+            <p class="section__lead">Можно передать всю перевозку или согласовать только необходимые этапы.</p>
+          </div>
+          <ol class="route-steps">
+            <li class="route-step"><span class="route-step__number">01</span><h3>Получаем параметры груза</h3><p>Тип, вес, объём, максимальные габариты, адреса и фотографии или спецификацию.</p></li>
+            <li class="route-step"><span class="route-step__number">02</span><h3>Связываемся с поставщиком</h3><p>При необходимости помогаем с выкупом товара и переводом денег в Китай.</p></li>
+            <li class="route-step"><span class="route-step__number">03</span><h3>Забираем груз</h3><p>Организуем забор с адреса или приём на терминале в Шэньчжэне.</p></li>
+            <li class="route-step"><span class="route-step__number">04</span><h3>Подбираем перевозку</h3><p>Железная дорога, автомобильный транспорт или авиа в зависимости от задачи.</p></li>
+            <li class="route-step"><span class="route-step__number">05</span><h3>Проводим оформление</h3><p>Доступно оформление полностью или отдельные таможенные услуги.</p></li>
+            <li class="route-step"><span class="route-step__number">06</span><h3>Доставляем в России</h3><p>До терминала или конечного адреса.</p></li>
+          </ol>
+          <button class="button button--outline" type="button" data-lead-open data-lead-title="Передать параметры груза">Передать параметры груза <span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+
+      <section class="section delivery-section" id="delivery" aria-labelledby="delivery-title">
+        <div class="section__container">
+          <p class="section-kicker"><span aria-hidden="true"></span>Способы доставки</p>
+          <h2 id="delivery-title">Подбираем способ перевозки под груз, маршрут и срок</h2>
+          <p class="section__lead section__lead--wide">Указанные сроки являются ориентировочными и уточняются после проверки маршрута и характеристик груза.</p>
+          <div class="delivery-grid">
+            <article class="delivery-card"><p class="delivery-card__term">ориентировочно 15-20 дней</p><h3>Автомобильная перевозка</h3><p>Вариант для задач, где автомобильный маршрут соответствует габаритам, пунктам забора и доставки.</p></article>
+            <article class="delivery-card"><p class="delivery-card__term">ориентировочно 20-25 дней</p><h3>Железнодорожная перевозка</h3><p>Используется для контейнеров и грузов, которым подходит железнодорожный маршрут.</p></article>
+            <article class="delivery-card"><p class="delivery-card__term">ориентировочно 5-7 дней</p><h3>Авиаперевозка</h3><p>Доступна для сборных грузов, подходящих по параметрам и условиям перевозки.</p></article>
+          </div>
+          <div class="section__footer-line"><p>Точный срок зависит от маршрута, груза, оформления и дополнительных операций.</p><button class="text-action" type="button" data-lead-open data-lead-title="Подобрать способ доставки">Подобрать способ доставки <span aria-hidden="true">→</span></button></div>
+        </div>
+      </section>
+
+      <section class="section clearance-section" id="clearance" aria-labelledby="clearance-title">
+        <div class="section__container clearance-section__layout">
+          <div><p class="section-kicker"><span aria-hidden="true"></span>Оформление</p><h2 id="clearance-title">Официальное оформление или карго-схема</h2><p class="section__lead">Логист уточнит параметры задачи и предложит доступный вариант оформления. Условия согласовываются до отправки.</p></div>
+          <div class="clearance-panels">
+            <article class="clearance-panel"><span>01</span><h3>Официальное оформление</h3><p>Полная таможенная очистка или отдельные таможенные и сопутствующие услуги по согласованному перечню.</p></article>
+            <article class="clearance-panel"><span>02</span><h3>Карго-схема</h3><p>Доступна как отдельный вариант доставки. Возможность и условия определяются после проверки груза и маршрута.</p></article>
+          </div>
+          <div class="clearance-section__bottom"><p>Не нужно выбирать схему самостоятельно. Передайте параметры груза и требования к поставке.</p><button class="button button--outline" type="button" data-lead-open data-lead-title="Обсудить схему с логистом">Обсудить схему с логистом <span aria-hidden="true">→</span></button></div>
+        </div>
+      </section>
+
+      <section class="section calculation-section" id="calculation" aria-labelledby="calculation-title">
+        <div class="section__container calculation-section__layout">
+          <div><p class="section-kicker"><span aria-hidden="true"></span>Предварительный расчёт</p><h2 id="calculation-title">Что нужно для предварительного расчёта перевозки</h2><p class="section__lead">Чем точнее параметры, тем точнее можно определить маршрут, срок и состав стоимости.</p><p class="calculation-section__notice">Ориентировочный тариф от 70 ₽/кг относится к базовым условиям и не является фиксированной ценой для спецтехники, негабарита или контейнера.</p></div>
+          <div class="factor-groups">
+            <article><h3>Груз</h3><ul><li>Тип и характер груза</li><li>Общий вес и объём</li><li>Максимальные габариты</li><li>Количество мест</li></ul></article>
+            <article><h3>Маршрут</h3><ul><li>Город или адрес забора в Китае</li><li>Город или адрес доставки в России</li><li>Способ перевозки, если он уже выбран</li></ul></article>
+            <article><h3>Условия</h3><ul><li>Схема оформления и дополнительные услуги</li><li>Фотографии, спецификация или ссылка на товар</li></ul></article>
+          </div>
+          <div class="calculation-section__action"><button class="button button--primary" type="button" data-lead-open data-lead-title="Получить расчёт перевозки">Получить расчёт перевозки <span aria-hidden="true">→</span></button><p>Можно передать известные параметры, фото или спецификацию. Недостающие данные логист уточнит при контакте.</p></div>
+        </div>
+      </section>
+
+      <section class="section contacts-section" id="contacts" aria-labelledby="contacts-title">
+        <div class="section__container contacts-section__layout">
+          <div><p class="section-kicker"><span aria-hidden="true"></span>Контакты и терминалы</p><h2 id="contacts-title">На связи на всех этапах перевозки</h2><p class="section__lead">На исходном лендинге заявлены связь 24/7 и доступ к отслеживанию груза в режиме реального времени.</p><p class="contacts-section__experience">Компания «Горизонт» работает в сфере транспортной логистики с 2000 года.</p></div>
+          <div class="contact-actions"><a href="tel:+79367772255"><span>Телефон</span><strong>8 (936) 777-22-55</strong></a><a href="tel:+79197772255"><span>Телефон</span><strong>8 (919) 777-22-55</strong></a><a href="mailto:office@gorizont-cn.ru"><span>Email</span><strong>office@gorizont-cn.ru</strong></a><div class="contact-actions__messengers"><button type="button" data-lead-open data-lead-title="Связаться с логистом в WhatsApp">WhatsApp</button><button type="button" data-lead-open data-lead-title="Связаться с логистом в Telegram">Telegram</button><button type="button" data-lead-open data-lead-title="Связаться с логистом в WeChat">WeChat</button></div></div>
+          <div class="terminal-list">
+            <details open><summary>Терминал в Китае</summary><p>SHENZHEN: RM608, GUANGSHEN BLDG.2023# SHENNAN EAST ROAD, SHENZHEN, CHINA</p></details>
+            <details><summary>Терминалы в России</summary><ul><li>Москва: Красногорский район, Ильинское шоссе, 4-й километр, строение 34</li><li>Санкт-Петербург: пос. Шушары, ул. Пушкинская, д. 29, корпус 6, стр. 1</li><li>Красноярск: ул. Свердловская, 6а, стр. 2</li><li>Норильск: ул. Октябрьская, стр. 33</li></ul></details>
+          </div>
+          <button class="button button--outline" type="button" data-lead-open data-lead-title="Связаться с логистом">Связаться с логистом <span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+
+      <section class="section faq-section" id="faq" aria-labelledby="faq-title">
+        <div class="section__container faq-section__layout"><div><p class="section-kicker"><span aria-hidden="true"></span>FAQ</p><h2 id="faq-title">Вопросы о расчёте и перевозке</h2><p class="section__lead">Для старта не нужен готовый логистический план, достаточно передать известные данные.</p></div><div class="faq-list">
+          <details open><summary>Какие данные нужны для расчёта перевозки?</summary><p>Нужны тип груза, вес, объём, максимальные габариты, адрес или город забора в Китае и точка доставки в России. Для сложного груза желательно приложить фотографию, спецификацию или ссылку на товар.</p></details>
+          <details><summary>Можно ли получить точную стоимость сразу на сайте?</summary><p>Нет. Для спецтехники, негабарита и контейнеров стоимость зависит от параметров груза, маршрута, способа перевозки, оформления и дополнительных операций. Сначала подготавливается предварительный расчёт, окончательные условия согласовываются после проверки данных.</p></details>
+          <details><summary>Вы забираете груз у поставщика в Китае?</summary><p>Да, на исходном лендинге заявлены забор груза с адреса и приём на терминале в Шэньчжэне. Перед расчётом нужно указать город или адрес поставщика.</p></details>
+          <details><summary>Можно ли заказать всю доставку у одной компании?</summary><p>Можно согласовать выкуп товара, забор у поставщика, отправку из Китая, перевозку, таможенное оформление и доставку до терминала или конечного адреса в России. Конкретный состав работ фиксируется в расчёте.</p></details>
+          <details><summary>Какие способы перевозки доступны?</summary><p>Доступны автомобильная, железнодорожная и авиационная перевозки. Ориентировочные сроки составляют 15-20 дней для авто, 20-25 дней для железной дороги и 5-7 дней для авиа. Срок уточняется по конкретному грузу и маршруту.</p></details>
+          <details><summary>Работаете ли вы с контейнерами?</summary><p>Да. На исходном лендинге указаны контейнеры 20 и 40 футов. Возможность размещения конкретного груза проверяется по весу, объёму и габаритам.</p></details>
+          <details><summary>Чем отличаются официальное оформление и карго-схема?</summary><p>Обе схемы доступны. Конкретный вариант и состав услуг определяются после проверки груза, маршрута и требований клиента. На странице не приводятся юридические трактовки или универсальные рекомендации без данных задачи.</p></details>
+          <details><summary>Можно ли отправить груз, если точных параметров пока нет?</summary><p>Для первичной проверки можно отправить фотографию, спецификацию, ссылку на товар и известные данные. Логист уточнит недостающие характеристики до подготовки расчёта.</p></details>
+          <details><summary>Помогаете ли вы оплатить товар поставщику?</summary><p>Да, на исходном лендинге заявлена помощь с переводом денег в Китай. Условия необходимо согласовать с логистом по конкретной поставке.</p></details>
+          <details><summary>Как можно контролировать перевозку?</summary><p>На исходном лендинге заявлен доступ к отслеживанию груза в режиме реального времени. Конкретный способ предоставления доступа должен быть уточнён при согласовании перевозки.</p></details>
+        </div><button class="button button--primary" type="button" data-lead-open data-lead-title="Получить расчёт перевозки">Получить расчёт перевозки <span aria-hidden="true">→</span></button></div>
+      </section>
+
+      <section class="final-cta" id="final-cta" aria-labelledby="final-cta-title">
+        <img src="/images/cargo-tracked-vehicle-warehouse.jpg" alt="Гусеничная техника в складском помещении" width="1200" height="1600" loading="lazy" decoding="async" />
+        <div class="final-cta__overlay" aria-hidden="true"></div>
+        <div class="section__container final-cta__content"><p class="section-kicker"><span aria-hidden="true"></span>Следующий шаг</p><h2 id="final-cta-title">Отправьте данные груза для предварительного расчёта</h2><p>Укажите то, что уже известно. Недостающие параметры логист уточнит при связи.</p><div><button class="button button--primary" type="button" data-lead-open data-lead-title="Получить расчёт перевозки">Получить расчёт перевозки <span aria-hidden="true">→</span></button><button class="button button--secondary" type="button" data-lead-open data-lead-title="Обсудить груз с логистом">Обсудить груз с логистом</button></div><small>Окончательная стоимость определяется после проверки параметров и согласования состава услуг.</small></div>
+      </section>
     </main>
+
+    <footer class="site-footer">
+      <div class="section__container site-footer__grid">
+        <a class="brand" href="#hero" aria-label="Горизонт - на первый экран"><span class="brand__mark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brand__copy"><strong>ГОРИЗОНТ</strong><small>международные перевозки</small></span></a>
+        <div><p class="site-footer__label">Контакты</p><a href="tel:+79367772255">8 (936) 777-22-55</a><a href="tel:+79197772255">8 (919) 777-22-55</a><a href="mailto:office@gorizont-cn.ru">office@gorizont-cn.ru</a></div>
+        <div><p class="site-footer__label">Мессенджеры</p><button type="button" data-lead-open data-lead-title="Связаться с логистом в WhatsApp">WhatsApp</button><button type="button" data-lead-open data-lead-title="Связаться с логистом в Telegram">Telegram</button><button type="button" data-lead-open data-lead-title="Связаться с логистом в WeChat">WeChat</button></div>
+        <div><p class="site-footer__label">Реквизиты</p><p>ООО «Горизонт»</p><p>ИНН: 5024242230</p><p>КПП: 502401001</p><p>ОГРН: 1245000042715</p></div>
+      </div>
+    </footer>
 
     <aside class="mobile-menu" id="mobile-menu" aria-hidden="true" aria-label="Мобильное меню">
       <div class="mobile-menu__top">
@@ -89,6 +253,10 @@
           <p class="lead-form__status" data-lead-status role="status" aria-live="polite"></p>
         </form>
       </div>
+    </dialog>
+
+    <dialog class="lightbox" id="cargo-lightbox" aria-labelledby="cargo-lightbox-caption">
+      <div class="lightbox__panel"><button class="dialog-close" type="button" data-lightbox-close aria-label="Закрыть фотографию"><span></span><span></span></button><img data-lightbox-image src="" alt="" /><p id="cargo-lightbox-caption" data-lightbox-caption></p></div>
     </dialog>
 
     <script type="module" src="/src/main.js"></script>
