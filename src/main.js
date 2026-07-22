@@ -14,11 +14,9 @@ const lightboxImage = document.querySelector('[data-lightbox-image]')
 const lightboxCaption = document.querySelector('[data-lightbox-caption]')
 const lightboxCloseButton = document.querySelector('[data-lightbox-close]')
 const header = document.querySelector('[data-header]')
-const heroBackground = document.querySelector('.hero__background img')
 const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
 let lastFocusedElement = null
 let lastLightboxFocusedElement = null
-let parallaxFrame = null
 
 function initHeroMotion() {
   if (reducedMotionQuery.matches) return
@@ -140,20 +138,6 @@ function initSectionMotion() {
   }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 })
 
   sections.forEach((section) => observer.observe(section))
-}
-
-function initHeroParallax() {
-  if (reducedMotionQuery.matches || !heroBackground || !window.matchMedia('(min-width: 64rem)').matches) return
-
-  window.addEventListener('pointermove', (event) => {
-    if (parallaxFrame) return
-    parallaxFrame = window.requestAnimationFrame(() => {
-      const x = ((event.clientX / window.innerWidth) - 0.5) * 12
-      const y = ((event.clientY / window.innerHeight) - 0.5) * 8
-      anime.set(heroBackground, { translateX: x, translateY: y })
-      parallaxFrame = null
-    })
-  }, { passive: true })
 }
 
 function initHeaderState() {
@@ -290,6 +274,5 @@ document.addEventListener('keydown', (event) => {
 
 initHeroMotion()
 initSectionMotion()
-initHeroParallax()
 initHeaderState()
 initFaqBehavior()

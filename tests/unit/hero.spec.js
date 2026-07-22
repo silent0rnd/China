@@ -42,6 +42,7 @@ describe('hero checkpoint', () => {
     const styles = readFileSync(new URL('../../src/styles/main.css', import.meta.url), 'utf8')
     expect(mainScript).toContain("import anime from 'animejs'")
     expect(mainScript).toContain('prefers-reduced-motion: reduce')
+    expect(mainScript).not.toContain('initHeroParallax')
     expect(styles).toContain('@media (prefers-reduced-motion: reduce)')
   })
 
@@ -50,6 +51,7 @@ describe('hero checkpoint', () => {
     expect(page).toContain('/icons/shipping-container.svg')
     expect(page).toContain('Маршрут под ключ')
     expect(page).toContain('<h2 id="contacts-title">Контакты</h2>')
+    expect(page.indexOf('id="faq"')).toBeLessThan(page.indexOf('id="contacts"'))
     expect(page).not.toContain('id="clearance"')
     expect(page).not.toContain('id="calculation"')
     expect(page).not.toContain('id="final-cta"')
