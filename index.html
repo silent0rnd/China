@@ -9,54 +9,88 @@
   </head>
   <body>
     <a class="skip-link" href="#main-content">Перейти к содержанию</a>
+
     <header class="site-header" data-header>
       <a class="brand" href="#hero" aria-label="Горизонт - на первый экран">
-        <span class="brand__mark" aria-hidden="true">Г</span>
+        <span class="brand__mark" aria-hidden="true"><i></i><i></i><i></i></span>
         <span class="brand__copy"><strong>ГОРИЗОНТ</strong><small>международные перевозки</small></span>
       </a>
+
       <nav class="desktop-nav" aria-label="Основная навигация">
-        <a href="#cargo">Реальные грузы</a><a href="#process">Как работаем</a><a href="#delivery">Способы доставки</a><a href="#contacts">Контакты</a>
+        <a href="#cargo">Реальные грузы</a>
+        <a href="#cargo-types">Что перевозим</a>
+        <a href="#process">Как работаем</a>
+        <a href="#delivery">Способы доставки</a>
+        <a href="#calculation">Расчёт</a>
+        <a href="#contacts">Контакты</a>
       </nav>
+
       <div class="header-actions">
-        <a class="header-phone" href="tel:+79367772255"><span>На связи 24/7</span>8 (936) 777-22-55</a>
-        <a class="header-cta" href="#calculation">Получить расчёт</a>
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu"><span>Меню</span></button>
+        <a class="header-phone" href="tel:+79367772255" aria-label="Позвонить: 8 936 777 22 55">
+          <b>8 (936) 777-22-55</b>
+        </a>
+        <button class="header-cta" type="button" data-lead-open data-lead-title="Получить расчёт перевозки">Получить расчёт</button>
+        <a class="mobile-call" href="tel:+79367772255" aria-label="Позвонить логисту"><span aria-hidden="true">☎</span></a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Открыть меню"><span></span><span></span><span></span></button>
       </div>
     </header>
 
     <main id="main-content">
       <section class="hero" id="hero" aria-labelledby="hero-title">
-        <picture class="hero__reference-visual" aria-hidden="true">
-          <source media="(max-width: 767px)" srcset="/images/hero-scene-mobile.png" />
-          <img src="/images/hero-scene-desktop.png" alt="" width="1680" height="945" fetchpriority="high" />
+        <picture class="hero__background" aria-hidden="true">
+          <source media="(max-width: 767px)" srcset="/images/hero-background-mobile.png" />
+          <img src="/images/hero-background-desktop-minimal.png" alt="" width="1586" height="992" fetchpriority="high" />
         </picture>
-        <div class="hero__content hero__semantic-layer">
-          <p class="eyebrow reveal-item"><span></span>Доставка сложных B2B-грузов из Китая</p>
-          <h1 id="hero-title" class="reveal-item">Доставка спецтехники, негабаритных грузов и контейнеров из Китая в Россию</h1>
-          <p class="hero__lead reveal-item">Заберём груз у поставщика, подберём транспорт и схему оформления, проведём таможенную очистку и доставим до конечной точки.</p>
-          <div class="hero__actions reveal-item">
-            <a class="button button--primary" href="#calculation">Получить расчёт перевозки <span aria-hidden="true">→</span></a>
-            <a class="button button--secondary" href="tel:+79367772255">Обсудить груз с логистом</a>
+        <div class="hero__atmosphere" aria-hidden="true"></div>
+
+        <div class="hero__content">
+          <p class="eyebrow"><span class="eyebrow__mark" aria-hidden="true"></span>Доставка сложных B2B-грузов из Китая</p>
+          <h1 id="hero-title"><span class="hero__copy--desktop">Доставка спецтехники, негабаритных грузов и контейнеров из Китая в Россию</span><span class="hero__copy--mobile">Доставка спецтехники и негабаритных грузов из Китая в Россию</span></h1>
+          <p class="hero__lead"><span class="hero__copy--desktop">Заберём груз у поставщика, подберём транспорт и схему оформления, проведём таможенную очистку и доставим до конечной точки.</span><span class="hero__copy--mobile">Контейнеры 20 и 40 футов. Перевозка, оформление и доставка до конечной точки.</span></p>
+          <div class="hero__actions">
+            <button class="button button--primary" type="button" data-lead-open data-lead-title="Получить расчёт перевозки">Получить расчёт перевозки <span aria-hidden="true">→</span></button>
+            <button class="button button--secondary" type="button" data-lead-open data-lead-title="Обсудить груз с логистом">Обсудить груз с логистом</button>
           </div>
-          <p class="hero__hint reveal-item">Отправьте маршрут, фотографию или спецификацию груза. Окончательная стоимость определяется после проверки параметров.</p>
-          <ul class="hero__facts reveal-item" aria-label="Ключевые условия">
-            <li><b>01</b><span>Официальное оформление<br />и карго-схема</span></li>
-            <li><b>02</b><span>Авто, железная дорога<br />и авиа</span></li>
-            <li><b>03</b><span>Контейнеры<br />20 и 40 футов</span></li>
-          </ul>
-        </div>
-        <div class="hero__hotspots" aria-hidden="true">
-          <a class="hero__hotspot hero__hotspot--primary" href="#calculation" tabindex="-1"></a>
-          <a class="hero__hotspot hero__hotspot--secondary" href="tel:+79367772255" tabindex="-1"></a>
+          <p class="hero__hint">Отправьте маршрут, фотографию или спецификацию груза. Окончательная стоимость определяется после проверки параметров.</p>
         </div>
       </section>
     </main>
 
     <aside class="mobile-menu" id="mobile-menu" aria-hidden="true" aria-label="Мобильное меню">
-      <div class="mobile-menu__top"><span class="eyebrow"><span></span>Навигация</span><button type="button" data-menu-close>Закрыть</button></div>
-      <nav><a href="#cargo">Реальные грузы</a><a href="#process">Как работаем</a><a href="#delivery">Доставка и сроки</a><a href="#calculation">Расчёт</a><a href="#contacts">Контакты</a></nav>
-      <div class="mobile-menu__contacts"><a href="tel:+79367772255">8 (936) 777-22-55</a><a href="tel:+79197772255">8 (919) 777-22-55</a></div>
+      <div class="mobile-menu__top">
+        <span class="eyebrow"><span class="eyebrow__mark" aria-hidden="true"></span>Навигация</span>
+        <button type="button" class="menu-close" data-menu-close aria-label="Закрыть меню"><span></span><span></span></button>
+      </div>
+      <nav aria-label="Навигация сайта">
+        <a href="#cargo">Реальные грузы</a>
+        <a href="#process">Как работаем</a>
+        <a href="#delivery">Доставка и сроки</a>
+        <a href="#calculation">Расчёт</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <div class="mobile-menu__contacts">
+        <a href="tel:+79367772255">8 (936) 777-22-55</a>
+        <a href="tel:+79197772255">8 (919) 777-22-55</a>
+        <button type="button" data-lead-open data-lead-title="Обсудить груз с логистом">Написать логисту <span aria-hidden="true">→</span></button>
+      </div>
     </aside>
+
+    <dialog class="lead-dialog" id="lead-dialog" aria-labelledby="lead-dialog-title">
+      <div class="lead-dialog__panel">
+        <button class="dialog-close" type="button" data-lead-close aria-label="Закрыть окно"><span></span><span></span></button>
+        <p class="eyebrow"><span class="eyebrow__mark" aria-hidden="true"></span>Первичная консультация</p>
+        <h2 id="lead-dialog-title">Получить расчёт перевозки</h2>
+        <p>Оставьте контакт и кратко опишите задачу. Точная стоимость рассчитывается после проверки параметров груза и маршрута.</p>
+        <form class="lead-form" data-lead-form novalidate>
+          <label>Имя<input name="name" autocomplete="name" required /></label>
+          <label>Телефон или мессенджер<input type="tel" name="contact" autocomplete="tel" inputmode="tel" required /></label>
+          <label>Краткое описание груза<textarea name="cargo" rows="3" required></textarea></label>
+          <button class="button button--primary" type="submit">Отправить запрос <span aria-hidden="true">→</span></button>
+          <p class="lead-form__status" data-lead-status role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </dialog>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

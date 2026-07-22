@@ -12,14 +12,26 @@ describe('hero checkpoint', () => {
     expect(page).toContain('Получить расчёт перевозки')
   })
 
-  it('uses the approved full-frame desktop and mobile visual without a shade layer', () => {
-    expect(page).toContain('hero__reference-visual')
-    expect(page).toContain('hero-scene-mobile.png')
-    expect(page).not.toContain('hero__shade')
+  it('uses separate clean desktop and mobile scene assets behind real hero controls', () => {
+    expect(page).toContain('hero-background-desktop-minimal.png')
+    expect(page).toContain('hero-background-mobile.png')
+    expect(page).not.toContain('hero__reference-visual')
+    expect(page).not.toContain('hero__semantic-layer')
   })
 
-  it('contains an accessible menu control', () => {
+  it('contains accessible menu and lead-dialog controls', () => {
     expect(page).toContain('aria-controls="mobile-menu"')
+    expect(page).toContain('id="lead-dialog"')
+    expect(page).toContain('data-lead-open')
+    expect(page).toContain('href="tel:+79367772255"')
+  })
+
+  it('uses the approved Anime.js motion layer with a reduced-motion fallback', () => {
+    const mainScript = readFileSync(new URL('../../src/main.js', import.meta.url), 'utf8')
+    const styles = readFileSync(new URL('../../src/styles/main.css', import.meta.url), 'utf8')
+    expect(mainScript).toContain("import anime from 'animejs'")
+    expect(mainScript).toContain('prefers-reduced-motion: reduce')
+    expect(styles).toContain('@media (prefers-reduced-motion: reduce)')
   })
 
   it('builds relative assets and deploys only the Vite output to GitHub Pages', () => {
