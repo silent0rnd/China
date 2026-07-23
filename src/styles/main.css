@@ -237,14 +237,34 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 .route-step:hover .route-step__icon { opacity: 1; filter: brightness(1.7) drop-shadow(0 0 0.8rem rgba(229, 75, 69, 0.32)); transform: translateX(0.28rem) scale(1.08); }
 .route-step:hover h3 { color: #fff; transform: translateX(0.18rem); }
 
-.delivery-section { background: #0a0d10; }
+.delivery-section { background: #080b0e; }
+.delivery-section::before { position: absolute; z-index: -2; inset: 4% -8% -10% 18%; content: ''; background: url('/images/hero-background-desktop-minimal.png') 68% 38% / cover no-repeat; filter: grayscale(1) contrast(1.12); opacity: 0.08; pointer-events: none; }
 .delivery-section h2 { max-width: 17ch; }
-.delivery-grid { counter-reset: delivery; display: grid; gap: 0; margin-top: 3.25rem; border-top: var(--line); border-bottom: var(--line); }
-.delivery-card { counter-increment: delivery; position: relative; display: grid; align-content: start; min-height: 20rem; padding: 5.25rem 1.4rem 1.75rem; border-bottom: var(--line); background: transparent; }
+.delivery-corridor { position: relative; margin-top: 2.6rem; overflow: hidden; border: var(--line); background: rgba(9, 12, 15, 0.92); box-shadow: inset 0 0.0625rem 0 rgba(255, 255, 255, 0.025), 0 2rem 5rem rgba(0, 0, 0, 0.24); }
+.delivery-corridor::before { position: absolute; inset: 0; content: ''; background: url('/images/hero-background-desktop-minimal.png') 62% 46% / cover no-repeat; filter: grayscale(1) contrast(1.15); opacity: 0.055; pointer-events: none; }
+.delivery-track { position: absolute; z-index: 3; top: 1.7rem; bottom: 1.7rem; left: 2rem; width: 0.0625rem; background: rgba(169, 43, 39, 0.24); pointer-events: none; }
+.delivery-track__progress { position: absolute; inset: 0; background: var(--accent); box-shadow: 0 0 1rem rgba(169, 43, 39, 0.28); transform: scaleY(1); transform-origin: top; }
+.delivery-grid { position: relative; z-index: 1; display: grid; }
+.delivery-card { position: relative; display: grid; min-height: 16rem; padding: 1.5rem 1.25rem 1.6rem 4.35rem; overflow: hidden; border-bottom: var(--line); background: rgba(10, 13, 16, 0.52); transition: border-color 260ms ease, background-color 320ms ease, box-shadow 320ms ease; }
 .delivery-card:last-child { border-bottom: 0; }
-.delivery-card::before { position: absolute; top: 1.45rem; left: 1.4rem; color: var(--text-muted); content: '0' counter(delivery); font: 400 1.9rem/1 'IBM Plex Mono', Consolas, monospace; }
-.delivery-card__term { order: -1; margin: 0 0 1.4rem; color: #c6a87f; font: 500 0.72rem/1.4 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.04em; }
+.delivery-card::after { position: absolute; inset: -30% -55%; content: ''; background: linear-gradient(108deg, transparent 38%, rgba(255, 255, 255, 0.055) 50%, transparent 62%); opacity: 0; transform: translateX(-38%); transition: opacity 240ms ease, transform 720ms cubic-bezier(.16, 1, .3, 1); pointer-events: none; }
+.delivery-card__meta { display: flex; align-items: center; justify-content: space-between; }
+.delivery-card__number { color: var(--text-muted); font: 400 1.35rem/1 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.04em; transition: color 260ms ease; }
+.delivery-card__node { position: absolute; z-index: 4; top: 1.72rem; left: 1.64rem; width: 0.72rem; height: 0.72rem; border: 0.1rem solid var(--accent); border-radius: 50%; background: #090c0f; box-shadow: 0 0 0 0.34rem rgba(9, 12, 15, 0.92), 0 0 1rem rgba(169, 43, 39, 0.18); transition: border-color 260ms ease, box-shadow 320ms ease; }
+.delivery-card__visual { position: absolute; top: 1.25rem; right: 1.3rem; display: grid; width: 4.4rem; height: 4.4rem; place-items: center; border: 0.0625rem solid rgba(104, 114, 122, 0.34); background: rgba(7, 9, 11, 0.58); box-shadow: inset 0 0 1.8rem rgba(255, 255, 255, 0.018); transition: border-color 280ms ease, background-color 280ms ease, box-shadow 320ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
+.delivery-card__visual img { width: 2.8rem; height: 2.8rem; opacity: 0.82; transition: filter 280ms ease, opacity 280ms ease; }
+.delivery-card__body { position: relative; z-index: 1; align-self: end; padding-top: 4.8rem; }
+.delivery-card__term { margin: 0 0 1rem; color: #c6a87f; font: 500 0.72rem/1.4 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.04em; transition: color 260ms ease; }
+.delivery-card h3 { max-width: 16ch; transition: color 260ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
 .delivery-card p:not(.delivery-card__term) { margin: 1rem 0 0; color: var(--text-secondary); line-height: 1.55; }
+.delivery-card:hover { border-color: rgba(169, 43, 39, 0.5); background-color: rgba(18, 23, 28, 0.9); box-shadow: inset 0 0 3rem rgba(169, 43, 39, 0.045); }
+.delivery-card:hover::after { opacity: 1; transform: translateX(38%); }
+.delivery-card:hover .delivery-card__number { color: #c8cdd1; }
+.delivery-card:hover .delivery-card__node { border-color: #e54b45; box-shadow: 0 0 0 0.34rem rgba(9, 12, 15, 0.92), 0 0 1.6rem rgba(229, 75, 69, 0.44); }
+.delivery-card:hover .delivery-card__visual { border-color: rgba(169, 43, 39, 0.68); background-color: rgba(15, 19, 23, 0.96); box-shadow: inset 0 0 2.2rem rgba(169, 43, 39, 0.07), 0 0 1.8rem rgba(0, 0, 0, 0.26); transform: translateX(0.45rem); }
+.delivery-card:hover .delivery-card__visual img { filter: brightness(1.65) drop-shadow(0 0 0.75rem rgba(229, 75, 69, 0.24)); opacity: 1; }
+.delivery-card:hover .delivery-card__term { color: #ddc398; }
+.delivery-card:hover h3 { color: #fff; transform: translateX(0.18rem); }
 
 .contacts-section { padding: clamp(4.5rem, 7vw, 7rem) 0; background: #080a0c; }
 .contacts-section::before { position: absolute; z-index: -2; right: -20%; bottom: -18rem; width: min(88rem, 100vw); height: 68rem; content: ''; background: url('/images/hero-background-desktop-minimal.png') center / cover no-repeat; filter: grayscale(1) contrast(1.05); opacity: 0.12; pointer-events: none; }
@@ -297,9 +317,15 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .cargo-card:nth-child(5) { aspect-ratio: 3 / 4; }
   .cargo-card:nth-child(6) { aspect-ratio: 4 / 3; }
   .cargo-types__grid { grid-template-columns: repeat(2, 1fr); }
+  .delivery-track { top: 8.15rem; right: 1.5rem; bottom: auto; left: 1.5rem; width: auto; height: 0.0625rem; }
+  .delivery-track__progress { transform: scaleX(1); transform-origin: left; }
   .delivery-grid { grid-template-columns: repeat(3, 1fr); }
-  .delivery-card { border-right: var(--line); border-bottom: 0; }
+  .delivery-card { min-height: 23rem; padding: 1.5rem 1.4rem 1.7rem; border-right: var(--line); border-bottom: 0; }
   .delivery-card:last-child { border-right: 0; }
+  .delivery-card__node { top: 7.81rem; left: 1.42rem; }
+  .delivery-card__visual { top: 1.45rem; right: 1.4rem; width: 5.2rem; height: 5.2rem; }
+  .delivery-card__visual img { width: 3.2rem; height: 3.2rem; }
+  .delivery-card__body { padding-top: 8rem; }
   .site-footer__grid { grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2rem; }
 }
 
@@ -354,7 +380,7 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .section { padding: clamp(4.75rem, 19vw, 6.25rem) 0; }
   .cargo-section { padding-top: 4.5rem; }
   .cargo-types { padding: 3.75rem 0; }
-  .cargo-section::before, .route-section::before, .contacts-section::before { opacity: 0.07; }
+  .cargo-section::before, .route-section::before, .delivery-section::before, .contacts-section::before { opacity: 0.07; }
   .cargo-types__grid { margin-top: 2.2rem; }
   .cargo-type { min-height: 12.5rem; }
   .route-steps { margin-top: 2.7rem; border: 0; }
@@ -364,7 +390,7 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .motion-ready .route-step::after { transform: scaleY(0); }
   .motion-ready .route-section.is-revealed .route-step::after { transform: scaleY(1); }
   .route-step__number { margin-bottom: 1rem; }
-  .delivery-card { min-height: 17rem; }
+  .delivery-corridor { margin-top: 2.2rem; }
   .contact-actions > a { grid-template-columns: 1fr; gap: 0.35rem; }
   .faq-list summary { grid-template-columns: 2.25rem 1fr auto; }
   .faq-list details p { padding-left: 2.25rem; }
@@ -374,5 +400,6 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
   .motion-ready .section > .section__container { opacity: 1 !important; transform: none !important; }
   .route-step::after { transform: none !important; }
+  .delivery-track__progress, .delivery-card__node, .delivery-card__visual, .delivery-card__body { opacity: 1 !important; transform: none !important; }
   .hero__background img { transform: none !important; }
 }

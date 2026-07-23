@@ -74,3 +74,45 @@ test('галерея не пересекается, FAQ идёт перед ко
   expect(headerBackdrop.width).toBeGreaterThanOrEqual(1400);
   expect(headerBackdrop.border).toBe('0px');
 });
+
+test('способы доставки образуют единый адаптивный коридор с рабочим CTA', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  await page.locator('#delivery').scrollIntoViewIfNeeded();
+
+  await expect(page.locator('#delivery .delivery-card')).toHaveCount(3);
+  await expect(page.locator('#delivery .delivery-track')).toBeVisible();
+
+  const icon = page.locator('#delivery .delivery-card__visual').first();
+  const transformBefore = await icon.evaluate((element) => window.getComputedStyle(element).transform);
+  await page.locator('#delivery .delivery-card').first().hover();
+  await page.waitForTimeout(380);
+  const transformAfter = await icon.evaluate((element) => window.getComputedStyle(element).transform);
+  expect(transformAfter).not.toBe(transformBefore);
+
+  await page.getByRole('button', { name: 'Подобрать способ доставки', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'Подобрать способ доставки' })).toBeVisible();
+});
+
+test('mobile-коридор способов доставки не создаёт переполнение и уважает reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page.locator('#delivery').scrollIntoViewIfNeeded();
+
+  const geometry = await page.locator('#delivery').evaluate((section) => {
+    const track = section.querySelector('.delivery-track');
+    const card = section.querySelector('.delivery-card');
+    const trackRect = track.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    return {
+      noOverflow: document.documentElement.scrollWidth === document.documentElement.clientWidth,
+      verticalTrack: trackRect.height > trackRect.width,
+      cardVisible: cardRect.height > 0 && window.getComputedStyle(card).opacity !== '0',
+    };
+  });
+
+  expect(geometry.noOverflow).toBe(true);
+  expect(geometry.verticalTrack).toBe(true);
+  expect(geometry.cardVisible).toBe(true);
+});

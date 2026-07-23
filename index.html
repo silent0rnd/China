@@ -144,10 +144,25 @@
           <p class="section-kicker"><span aria-hidden="true"></span>Способы доставки</p>
           <h2 id="delivery-title">Подбираем способ перевозки под груз, маршрут и срок</h2>
           <p class="section__lead section__lead--wide">Указанные сроки являются ориентировочными и уточняются после проверки маршрута и характеристик груза.</p>
-          <div class="delivery-grid">
-            <article class="delivery-card"><p class="delivery-card__term">ориентировочно 15-20 дней</p><h3>Автомобильная перевозка</h3><p>Вариант для задач, где автомобильный маршрут соответствует габаритам, пунктам забора и доставки.</p></article>
-            <article class="delivery-card"><p class="delivery-card__term">ориентировочно 20-25 дней</p><h3>Железнодорожная перевозка</h3><p>Используется для контейнеров и грузов, которым подходит железнодорожный маршрут.</p></article>
-            <article class="delivery-card"><p class="delivery-card__term">ориентировочно 5-7 дней</p><h3>Авиаперевозка</h3><p>Доступна для сборных грузов, подходящих по параметрам и условиям перевозки.</p></article>
+          <div class="delivery-corridor">
+            <div class="delivery-track" aria-hidden="true"><span class="delivery-track__progress"></span></div>
+            <div class="delivery-grid">
+              <article class="delivery-card">
+                <div class="delivery-card__meta" aria-hidden="true"><span class="delivery-card__number">01</span><span class="delivery-card__node"></span></div>
+                <div class="delivery-card__visual" aria-hidden="true"><img src="/icons/truck.svg" alt="" width="72" height="72" loading="lazy" decoding="async" /></div>
+                <div class="delivery-card__body"><p class="delivery-card__term">ориентировочно 15-20 дней</p><h3>Автомобильная перевозка</h3><p>Вариант для задач, где автомобильный маршрут соответствует габаритам, пунктам забора и доставки.</p></div>
+              </article>
+              <article class="delivery-card">
+                <div class="delivery-card__meta" aria-hidden="true"><span class="delivery-card__number">02</span><span class="delivery-card__node"></span></div>
+                <div class="delivery-card__visual" aria-hidden="true"><img src="/icons/train.svg" alt="" width="72" height="72" loading="lazy" decoding="async" /></div>
+                <div class="delivery-card__body"><p class="delivery-card__term">ориентировочно 20-25 дней</p><h3>Железнодорожная перевозка</h3><p>Используется для контейнеров и грузов, которым подходит железнодорожный маршрут.</p></div>
+              </article>
+              <article class="delivery-card">
+                <div class="delivery-card__meta" aria-hidden="true"><span class="delivery-card__number">03</span><span class="delivery-card__node"></span></div>
+                <div class="delivery-card__visual" aria-hidden="true"><img src="/icons/airplane-in-flight.svg" alt="" width="72" height="72" loading="lazy" decoding="async" /></div>
+                <div class="delivery-card__body"><p class="delivery-card__term">ориентировочно 5-7 дней</p><h3>Авиаперевозка</h3><p>Доступна для сборных грузов, подходящих по параметрам и условиям перевозки.</p></div>
+              </article>
+            </div>
           </div>
           <div class="section__footer-line"><p>Точный срок зависит от маршрута, груза, оформления и дополнительных операций.</p><button class="text-action" type="button" data-lead-open data-lead-title="Подобрать способ доставки">Подобрать способ доставки <span aria-hidden="true">→</span></button></div>
         </div>

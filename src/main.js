@@ -54,6 +54,15 @@ function initSectionMotion() {
 
       const section = entry.target
       const container = section.querySelector(':scope > .section__container')
+      const isDeliverySection = section.matches('.delivery-section')
+      const deliveryTrack = isDeliverySection ? section.querySelector('.delivery-track__progress') : null
+      const deliveryNodes = isDeliverySection ? section.querySelectorAll('.delivery-card__node') : []
+      const deliveryDetails = isDeliverySection ? section.querySelectorAll('.delivery-card__visual, .delivery-card__body') : []
+      const deliveryAxis = window.matchMedia('(max-width: 47.99rem)').matches ? 'scaleY' : 'scaleX'
+
+      if (deliveryTrack) anime.set(deliveryTrack, { [deliveryAxis]: 0 })
+      if (deliveryNodes.length) anime.set(deliveryNodes, { opacity: 0, scale: 0.58 })
+      if (deliveryDetails.length) anime.set(deliveryDetails, { opacity: 0, translateY: 16 })
       section.classList.add('is-revealed')
 
       if (container) {
@@ -131,6 +140,40 @@ function initSectionMotion() {
               target.style.removeProperty('transform')
             }),
           }, '-=670')
+      }
+
+      if (isDeliverySection) {
+        const deliveryTimeline = anime.timeline({ easing: 'cubicBezier(.16, 1, .3, 1)' })
+
+        deliveryTimeline
+          .add({
+            targets: deliveryTrack,
+            [deliveryAxis]: [0, 1],
+            duration: 980,
+            complete: () => deliveryTrack?.style.removeProperty('transform'),
+          })
+          .add({
+            targets: deliveryNodes,
+            opacity: [0, 1],
+            scale: [0.58, 1],
+            delay: anime.stagger(130),
+            duration: 420,
+            complete: () => deliveryNodes.forEach((target) => {
+              target.style.removeProperty('opacity')
+              target.style.removeProperty('transform')
+            }),
+          }, '-=720')
+          .add({
+            targets: deliveryDetails,
+            opacity: [0, 1],
+            translateY: [16, 0],
+            delay: anime.stagger(85),
+            duration: 620,
+            complete: () => deliveryDetails.forEach((target) => {
+              target.style.removeProperty('opacity')
+              target.style.removeProperty('transform')
+            }),
+          }, '-=480')
       }
 
       observer.unobserve(section)

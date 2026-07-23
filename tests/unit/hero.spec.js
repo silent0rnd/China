@@ -58,6 +58,19 @@ describe('hero checkpoint', () => {
     expect(page).not.toContain('class="terminal-list"')
   })
 
+  it('uses a single cinematic delivery corridor with local transport icons', () => {
+    const mainScript = readFileSync(new URL('../../src/main.js', import.meta.url), 'utf8')
+    expect(page).toContain('class="delivery-corridor"')
+    expect(page).toContain('class="delivery-track__progress"')
+    expect(page).toContain('/icons/truck.svg')
+    expect(page).toContain('/icons/train.svg')
+    expect(page).toContain('/icons/airplane-in-flight.svg')
+    expect(existsSync(new URL('../../public/icons/train.svg', import.meta.url))).toBe(true)
+    expect(existsSync(new URL('../../public/icons/airplane-in-flight.svg', import.meta.url))).toBe(true)
+    expect(mainScript).toContain("section.matches('.delivery-section')")
+    expect(mainScript).toContain('deliveryTimeline')
+  })
+
   it('builds relative assets and deploys only the Vite output to GitHub Pages', () => {
     expect(viteConfig).toContain("base: './'")
     expect(pagesWorkflow).toContain('actions/configure-pages@v5')
