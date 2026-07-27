@@ -1,9 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-hidden="true">
   <defs>
     <radialGradient id="contact">
-      <stop offset="0%" stop-color="#000" stop-opacity="0.55"/>
+      <stop offset="0%" stop-color="#000" stop-opacity="0.62"/>
+      <stop offset="55%" stop-color="#000" stop-opacity="0.24"/>
       <stop offset="100%" stop-color="#000" stop-opacity="0"/>
     </radialGradient>
+    <filter id="soften" x="-40%" y="-60%" width="180%" height="220%">
+      <feGaussianBlur stdDeviation="2.2"/>
+    </filter>
+    <linearGradient id="gr1b2229" x1="0" y1="0" x2="0.25" y2="1"><stop offset="0" stop-color="#1f2730"/><stop offset="1" stop-color="#101418"/></linearGradient>
+    <linearGradient id="gl333d47" x1="0" y1="0" x2="0.25" y2="1"><stop offset="0" stop-color="#3d4955"/><stop offset="1" stop-color="#20262c"/></linearGradient>
+    <linearGradient id="gt5b6774" x1="0" y1="0" x2="0.85" y2="1"><stop offset="0" stop-color="#7a8a9b"/><stop offset="1" stop-color="#434c56"/></linearGradient>
   </defs>
-  <ellipse cx="64.00" cy="80.00" rx="43.5" ry="18.0" fill="url(#contact)"/><polygon points="113.35,88.92 81.85,104.67 81.85,75.28 113.35,59.52" fill="#1b2229"/><polygon points="14.65,71.08 81.85,104.67 81.85,75.28 14.65,41.68" fill="#333d47"/><polygon points="46.15,25.93 113.35,59.52 81.85,75.28 14.65,41.68" fill="#5b6774"/><polygon points="25.15,74.75 27.46,75.91 27.46,49.66 25.15,48.50" fill="#1f272e"/><polygon points="36.70,80.52 39.01,81.68 39.01,55.43 36.70,54.27" fill="#1f272e"/><polygon points="48.25,86.30 50.56,87.45 50.56,61.20 48.25,60.05" fill="#1f272e"/><polygon points="59.80,92.08 62.11,93.23 62.11,66.98 59.80,65.83" fill="#1f272e"/><polygon points="71.35,97.85 73.66,99.00 73.66,72.75 71.35,71.60" fill="#1f272e"/><polygon points="113.35,86.83 97.60,94.70 97.60,69.50 113.35,61.63" fill="#12181d"/><polygon points="97.60,94.70 81.85,102.58 81.85,77.38 97.60,69.50" fill="#12181d"/>
+  <ellipse cx="66.50" cy="82.00" rx="43.5" ry="18.0" fill="url(#contact)" filter="url(#soften)"/><polygon points="113.35,88.92 81.85,104.67 81.85,75.28 113.35,59.52" fill="url(#gr1b2229)"/><polygon points="14.65,71.08 81.85,104.67 81.85,75.28 14.65,41.68" fill="url(#gl333d47)"/><polygon points="46.15,25.93 113.35,59.52 81.85,75.28 14.65,41.68" fill="url(#gt5b6774)"/><polyline points="113.35,59.52 46.15,25.93 14.65,41.68" fill="none" stroke="#dfe4ea" stroke-width="0.7" stroke-linejoin="round" opacity="0.26"/><line x1="113.35" y1="88.92" x2="113.35" y2="59.52" stroke="#000" stroke-width="0.9" opacity="0.3"/><polygon points="25.15,74.75 27.46,75.91 27.46,49.66 25.15,48.50" fill="#1f272e"/><polygon points="36.70,80.52 39.01,81.68 39.01,55.43 36.70,54.27" fill="#1f272e"/><polygon points="48.25,86.30 50.56,87.45 50.56,61.20 48.25,60.05" fill="#1f272e"/><polygon points="59.80,92.08 62.11,93.23 62.11,66.98 59.80,65.83" fill="#1f272e"/><polygon points="71.35,97.85 73.66,99.00 73.66,72.75 71.35,71.60" fill="#1f272e"/><polygon points="113.35,86.83 97.60,94.70 97.60,69.50 113.35,61.63" fill="#12181d"/><polygon points="97.60,94.70 81.85,102.58 81.85,77.38 97.60,69.50" fill="#12181d"/>
 </svg>

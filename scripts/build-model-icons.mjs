@@ -1,10 +1,16 @@
 /**
  * Генератор изометрических деталей макета.
  *
- * Каждая иконка — набор коробок в дметрической проекции 2:1, залитых тремя
- * тонами одного материала: верхняя грань светлее, левая средняя, правая тёмная.
- * Направление света совпадает с --light-angle в src/styles/main.css, поэтому
- * детали выглядят снятыми в той же сцене, что и hero-макет.
+ * Каждая иконка — набор коробок в дметрической проекции 2:1. Направление света
+ * совпадает с --light-angle в src/styles/main.css, поэтому детали выглядят
+ * снятыми в той же сцене, что и hero-макет.
+ *
+ * Плоская заливка граней — главное, что выдаёт вектор, поэтому каждая грань
+ * получает четыре признака объёма:
+ *   1. градиент вдоль направления света (светлее к источнику);
+ *   2. затемнение к основанию — приближение ambient occlusion;
+ *   3. контровой блик по верхним рёбрам, обращённым к лампе;
+ *   4. мягкая размытая контактная тень вместо жёсткого эллипса.
  *
  * Запуск: node scripts/build-model-icons.mjs
  */
@@ -40,6 +46,49 @@ const project = (x, y, z) => [
 
 const points = (list) => list.map(([x, y, z]) => project(x, y, z).map((n) => n.toFixed(2)).join(',')).join(' ')
 
+/* --- Работа с цветом: из одного тона выводим светлый и тёмный край грани --- */
+
+const clampByte = (n) => (n < 0 ? 0 : n > 255 ? 255 : Math.round(n))
+
+function shade(hex, factor) {
+  const value = parseInt(hex.slice(1), 16)
+  const r = clampByte(((value >> 16) & 255) * factor)
+  const g = clampByte(((value >> 8) & 255) * factor)
+  const b = clampByte((value & 255) * factor)
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
+}
+
+/**
+ * Градиенты граней. Собираются лениво по мере использования цветов,
+ * чтобы в defs каждого файла попали только реально нужные.
+ */
+const gradients = new Map()
+
+/**
+ * Перепад внутри грани. Верхняя грань смотрит в лампу, поэтому у неё
+ * самый широкий диапазон; боковые уходят в тень к основанию.
+ */
+const FACE_RANGE = {
+  top: [1.34, 0.74],
+  left: [1.2, 0.62],
+  right: [1.16, 0.58],
+}
+
+function gradientFor(hex, kind) {
+  const id = `g${kind[0]}${hex.slice(1)}`
+  if (!gradients.has(id)) {
+    const [light, dark] = FACE_RANGE[kind]
+    // Верхняя грань освещается по диагонали, боковые — сверху вниз:
+    // так основание детали садится в собственную тень.
+    const vector = kind === 'top' ? 'x1="0" y1="0" x2="0.85" y2="1"' : 'x1="0" y1="0" x2="0.25" y2="1"'
+    gradients.set(
+      id,
+      `<linearGradient id="${id}" ${vector}><stop offset="0" stop-color="${shade(hex, light)}"/><stop offset="1" stop-color="${shade(hex, dark)}"/></linearGradient>`,
+    )
+  }
+  return `url(#${id})`
+}
+
 const face = (list, fill) => `<polygon points="${points(list)}" fill="${fill}"/>`
 
 /**
@@ -51,27 +100,42 @@ function box(x, y, z, w, d, h, tint = FACE) {
   const y2 = y + d
   const z2 = z + h
 
+  // Самая близкая к лампе вершина верхней грани — угол (x, y).
+  // По двум сходящимся в ней рёбрам идёт контровой блик.
+  const rim = points([[x2, y, z2], [x, y, z2], [x, y2, z2]])
+
   return [
     // правая грань (уходит от света)
-    face([[x2, y, z], [x2, y2, z], [x2, y2, z2], [x2, y, z2]], tint.right),
+    face([[x2, y, z], [x2, y2, z], [x2, y2, z2], [x2, y, z2]], gradientFor(tint.right, 'right')),
     // левая грань
-    face([[x, y2, z], [x2, y2, z], [x2, y2, z2], [x, y2, z2]], tint.left),
+    face([[x, y2, z], [x2, y2, z], [x2, y2, z2], [x, y2, z2]], gradientFor(tint.left, 'left')),
     // верхняя грань (ловит свет)
-    face([[x, y, z2], [x2, y, z2], [x2, y2, z2], [x, y2, z2]], tint.top),
+    face([[x, y, z2], [x2, y, z2], [x2, y2, z2], [x, y2, z2]], gradientFor(tint.top, 'top')),
+    // контровой блик по верхним рёбрам
+    `<polyline points="${rim}" fill="none" stroke="#dfe4ea" stroke-width="0.7" stroke-linejoin="round" opacity="0.26"/>`,
+    // затемнение в стыке граней: приближение ambient occlusion
+    `<line x1="${project(x2, y, z)[0].toFixed(2)}" y1="${project(x2, y, z)[1].toFixed(2)}" x2="${project(x2, y, z2)[0].toFixed(2)}" y2="${project(x2, y, z2)[1].toFixed(2)}" stroke="#000" stroke-width="0.9" opacity="0.3"/>`,
   ].join('')
 }
 
-/** Плоское светящееся пятно — фара, лампа, сигнал. */
+/** Светящееся пятно с ореолом — фара, лампа, сигнал. */
 function lamp(x, y, z, color, radius = 2.4) {
   const [sx, sy] = project(x, y, z)
-  return `<circle cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" r="${radius}" fill="${color}" opacity="0.85"/>`
+  const cx = sx.toFixed(2)
+  const cy = sy.toFixed(2)
+  return (
+    `<circle cx="${cx}" cy="${cy}" r="${(radius * 2.4).toFixed(1)}" fill="${color}" opacity="0.13"/>` +
+    `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${color}" opacity="0.9"/>` +
+    `<circle cx="${cx}" cy="${cy}" r="${(radius * 0.42).toFixed(1)}" fill="#fff" opacity="0.5"/>`
+  )
 }
 
-/** Контактная тень под деталью — эллипс на плоскости стола. */
+/** Мягкая контактная тень под деталью — эллипс на плоскости стола. */
 function contactShadow(x, y, rx = 26, ry = 11) {
   const [sx, sy] = project(x, y, 0)
   const scale = UNIT / 7
-  return `<ellipse cx="${sx.toFixed(2)}" cy="${sy.toFixed(2)}" rx="${(rx * scale).toFixed(1)}" ry="${(ry * scale).toFixed(1)}" fill="url(#contact)"/>`
+  // Тень смещена от лампы: источник сверху-слева, значит тень уходит вправо-вниз.
+  return `<ellipse cx="${(sx + 2.5).toFixed(2)}" cy="${(sy + 2).toFixed(2)}" rx="${(rx * scale).toFixed(1)}" ry="${(ry * scale).toFixed(1)}" fill="url(#contact)" filter="url(#soften)"/>`
 }
 
 const tint = (top, left, right) => ({ top, left, right })
@@ -80,15 +144,18 @@ const ACCENT = tint('#8f3330', '#6d2523', '#4a1917')
 const ICONS = {
   /* --- Категории грузов --- */
 
-  // Бульдозер: гусеницы, корпус, кабина, отвал.
+  // Бульдозер. Порядок отрисовки — от дальнего к ближнему (по сумме x+y),
+  // иначе отвал уходит под корпус. Силуэт держат высокий отвал спереди
+  // и кабина сзади: на 43px читается только он, мелкие детали пропадают.
   bulldozer: () =>
     contactShadow(0, 0, 28, 12) +
-    box(-2.2, -1.9, 0, 4.4, 0.8, 0.9) + // гусеница дальняя
-    box(-2.2, 1.1, 0, 4.4, 0.8, 0.9) + // гусеница ближняя
-    box(-1.9, -1.1, 0.9, 3.6, 2.2, 1.1) + // корпус
-    box(-0.4, -0.7, 2, 1.7, 1.4, 1.5) + // кабина
-    box(2.3, -1.9, 0.3, 0.5, 3.8, 1.9) + // отвал
-    lamp(1.75, -0.75, 2.9, GLOW, 2.2),
+    box(-2.4, -1.9, 0, 4.2, 0.85, 1) + // гусеница дальняя
+    box(-2, -1, 1, 3.4, 2, 1.15) + // корпус
+    box(-1.5, -0.6, 2.15, 1.9, 1.2, 1.7) + // кабина
+    box(-2.4, 1.05, 0, 4.2, 0.85, 1) + // гусеница ближняя
+    box(1.9, -2.1, 0.15, 0.55, 4.2, 2.5) + // отвал
+    box(1.75, -2.1, 0.15, 0.2, 4.2, 0.5) + // нож отвала
+    lamp(-0.6, -0.6, 3.85, GLOW, 2),
 
   // Кран: основание, мачта, стрела, крюк.
   crane: () =>
@@ -134,14 +201,17 @@ const ICONS = {
       .map((y) => face([[-1.1, y, 0.48], [1.1, y, 0.48], [1.1, y + 0.22, 0.48], [-1.1, y + 0.22, 0.48]], '#1b222a'))
       .join(''),
 
-  // Телефонная трубка на подставке — связь с поставщиком.
+  // Телефонная трубка на базе. Трубка поднята над базой и сдвинута,
+  // чтобы просвет под ней читался и силуэт не сливался в один блок.
   'phone-call': () =>
     contactShadow(0, 0, 22, 9) +
-    box(-2, -1.4, 0, 4, 2.8, 0.5) +
-    box(-1.6, -1, 0.5, 1, 2, 1.5) +
-    box(0.6, -1, 0.5, 1, 2, 1.5) +
-    box(-1.6, -0.45, 1.7, 3.2, 0.9, 0.55) +
-    lamp(1.1, -1, 2.3, GLOW, 2.1),
+    box(-2.1, -1.5, 0, 4.2, 3, 0.6) + // база
+    box(-1.5, -0.9, 0.6, 0.7, 1.8, 0.5, tint('#2a333c', '#1b2229', '#12171c')) + // ложемент
+    box(0.8, -0.9, 0.6, 0.7, 1.8, 0.5, tint('#2a333c', '#1b2229', '#12171c')) +
+    box(-1.75, -1.15, 1.5, 1.05, 2.3, 1.15) + // рожок трубки
+    box(0.7, -1.15, 1.5, 1.05, 2.3, 1.15) +
+    box(-1.4, -0.55, 2.05, 2.8, 1.1, 0.6) + // ручка трубки
+    lamp(1.65, -1.15, 2.75, GLOW, 2),
 
   // Упакованный груз на поддоне.
   package: () =>
@@ -210,13 +280,24 @@ const ICONS = {
     lamp(0, -3.8, 1.75, SIGNAL, 1.8),
 }
 
-function render(name, body) {
+/**
+ * Тело иконки строится первым: по ходу отрисовки регистрируются градиенты
+ * граней, и только после этого можно собрать defs.
+ */
+function render(body) {
+  const faceGradients = [...gradients.values()].join('\n    ')
+
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SIZE} ${SIZE}" width="${SIZE}" height="${SIZE}" role="img" aria-hidden="true">
   <defs>
     <radialGradient id="contact">
-      <stop offset="0%" stop-color="#000" stop-opacity="0.55"/>
+      <stop offset="0%" stop-color="#000" stop-opacity="0.62"/>
+      <stop offset="55%" stop-color="#000" stop-opacity="0.24"/>
       <stop offset="100%" stop-color="#000" stop-opacity="0"/>
     </radialGradient>
+    <filter id="soften" x="-40%" y="-60%" width="180%" height="220%">
+      <feGaussianBlur stdDeviation="2.2"/>
+    </filter>
+    ${faceGradients}
   </defs>
   ${body}
 </svg>
@@ -226,7 +307,9 @@ function render(name, body) {
 mkdirSync(OUT_DIR, { recursive: true })
 
 for (const [name, build] of Object.entries(ICONS)) {
-  writeFileSync(resolve(OUT_DIR, `${name}.svg`), render(name, build()), 'utf8')
+  gradients.clear()
+  const body = build()
+  writeFileSync(resolve(OUT_DIR, `${name}.svg`), render(body), 'utf8')
 }
 
 console.log(`Собрано деталей: ${Object.keys(ICONS).length} -> public/icons/model/`)
