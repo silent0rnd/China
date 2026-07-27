@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-hidden="true">
+  <defs>
+    <radialGradient id="contact">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="64.00" cy="80.00" rx="42.0" ry="18.0" fill="url(#contact)"/><polygon points="107.05,81.58 98.65,85.78 98.65,76.33 107.05,72.13" fill="#1b2229"/><polygon points="52.45,62.67 98.65,85.78 98.65,76.33 52.45,53.22" fill="#333d47"/><polygon points="60.85,49.02 107.05,72.13 98.65,76.33 52.45,53.22" fill="#5b6774"/><polygon points="75.55,97.33 67.15,101.53 67.15,92.08 75.55,87.88" fill="#1b2229"/><polygon points="20.95,78.42 67.15,101.53 67.15,92.08 20.95,68.97" fill="#333d47"/><polygon points="29.35,64.77 75.55,87.88 67.15,92.08 20.95,68.97" fill="#5b6774"/><polygon points="93.40,73.70 70.30,85.25 70.30,73.70 93.40,62.15" fill="#1b2229"/><polygon points="32.50,66.35 70.30,85.25 70.30,73.70 32.50,54.80" fill="#333d47"/><polygon points="55.60,43.25 93.40,62.15 70.30,73.70 32.50,54.80" fill="#5b6774"/><polygon points="85.00,62.15 70.30,69.50 70.30,53.75 85.00,46.40" fill="#1b2229"/><polygon points="52.45,60.58 70.30,69.50 70.30,53.75 52.45,44.83" fill="#333d47"/><polygon points="67.15,37.47 85.00,46.40 70.30,53.75 52.45,44.83" fill="#5b6774"/><polygon points="113.35,81.57 73.45,101.52 73.45,81.58 113.35,61.63" fill="#1b2229"/><polygon points="68.20,98.90 73.45,101.52 73.45,81.58 68.20,78.95" fill="#333d47"/><polygon points="108.10,59.00 113.35,61.63 73.45,81.58 68.20,78.95" fill="#5b6774"/><circle cx="90.25" cy="54.80" r="2.2" fill="#c9a068" opacity="0.85"/>
+</svg>

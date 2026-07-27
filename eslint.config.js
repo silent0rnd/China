@@ -16,4 +16,14 @@ export default [
       },
     },
   },
+  {
+    // Сборочные скрипты выполняются в Node, а не в браузере.
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+      },
+    },
+  },
 ]

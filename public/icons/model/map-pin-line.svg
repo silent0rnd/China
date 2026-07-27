@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-hidden="true">
+  <defs>
+    <radialGradient id="contact">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="64.00" cy="80.00" rx="33.0" ry="13.5" fill="url(#contact)"/><polygon points="114.40,80.00 64.00,105.20 64.00,101.53 114.40,76.33" fill="#1b2229"/><polygon points="13.60,80.00 64.00,105.20 64.00,101.53 13.60,76.33" fill="#333d47"/><polygon points="64.00,51.13 114.40,76.33 64.00,101.53 13.60,76.33" fill="#5b6774"/><polygon points="75.55,76.33 64.00,82.10 64.00,54.80 75.55,49.02" fill="#1b2229"/><polygon points="52.45,76.33 64.00,82.10 64.00,54.80 52.45,49.02" fill="#333d47"/><polygon points="64.00,43.25 75.55,49.02 64.00,54.80 52.45,49.02" fill="#5b6774"/><polygon points="85.00,49.02 64.00,59.52 64.00,49.02 85.00,38.52" fill="#4a1917"/><polygon points="43.00,49.02 64.00,59.52 64.00,49.02 43.00,38.52" fill="#6d2523"/><polygon points="64.00,28.02 85.00,38.52 64.00,49.02 43.00,38.52" fill="#8f3330"/><circle cx="64.00" cy="36.95" r="2" fill="#a92b27" opacity="0.85"/>
+</svg>

@@ -1,5 +1,6 @@
 import './styles/main.css'
 import anime from 'animejs'
+import { initCursorMotion } from './motion/cursor.js'
 
 const menuButton = document.querySelector('.menu-toggle')
 const mobileMenu = document.querySelector('.mobile-menu')
@@ -43,6 +44,80 @@ function initHeroMotion() {
   })
 }
 
+const ASSEMBLY_EASING = 'cubicBezier(.16, 1, .3, 1)'
+
+/**
+ * Изометрический вектор, вдоль которого детали «прилетают» на стол.
+ * Берётся из тех же токенов, что и геометрия макета в CSS.
+ */
+function assemblyVector() {
+  const styles = window.getComputedStyle(document.documentElement)
+  const root = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16
+  const toPx = (value, fallback) => {
+    const parsed = parseFloat(value)
+    return Number.isFinite(parsed) ? parsed * root : fallback
+  }
+
+  return {
+    x: toPx(styles.getPropertyValue('--iso-vector-x'), 26),
+    y: toPx(styles.getPropertyValue('--iso-vector-y'), 15),
+  }
+}
+
+/**
+ * Задержки по пространственному положению, а не по порядку в DOM:
+ * сборка идёт от левого верхнего угла к правому нижнему, как если бы
+ * детали расставляли рукой.
+ */
+function spatialDelay(elements, step = 62, start = 0) {
+  const ranking = new Map()
+
+  ;[...elements]
+    .map((element) => {
+      const rect = element.getBoundingClientRect()
+      return { element, score: rect.top * 1.6 + rect.left }
+    })
+    .sort((a, b) => a.score - b.score)
+    .forEach(({ element }, index) => ranking.set(element, start + index * step))
+
+  return (element) => ranking.get(element) ?? start
+}
+
+/** Убирает инлайн-стили, чтобы дальше работали CSS-состояния. */
+function clearInline(elements) {
+  elements.forEach((element) => {
+    element.style.removeProperty('opacity')
+    element.style.removeProperty('transform')
+  })
+}
+
+/**
+ * Общая грамматика появления: деталь прилетает вдоль изометрической оси,
+ * слегка уменьшенная, и встаёт на стол с коротким овершутом.
+ */
+function assemble(targets, { step = 62, start = 0, duration = 620, complete } = {}) {
+  const elements = [...targets]
+  if (!elements.length) return null
+
+  const vector = assemblyVector()
+  const delayFor = spatialDelay(elements, step, start)
+
+  return anime({
+    targets: elements,
+    opacity: [0, 1],
+    translateX: [-vector.x, 0],
+    translateY: [-vector.y, 0],
+    scale: [0.965, 1],
+    delay: (element) => delayFor(element),
+    duration,
+    easing: ASSEMBLY_EASING,
+    complete: () => {
+      clearInline(elements)
+      complete?.()
+    },
+  })
+}
+
 function initSectionMotion() {
   if (reducedMotionQuery.matches || !('IntersectionObserver' in window)) return
 
@@ -63,6 +138,8 @@ function initSectionMotion() {
       if (deliveryTrack) anime.set(deliveryTrack, { [deliveryAxis]: 0 })
       if (deliveryNodes.length) anime.set(deliveryNodes, { opacity: 0, scale: 0.58 })
       if (deliveryDetails.length) anime.set(deliveryDetails, { opacity: 0, translateY: 16 })
+
+      // Проход света по секции — связывает все блоки в одно событие.
       section.classList.add('is-revealed')
 
       if (container) {
@@ -71,79 +148,71 @@ function initSectionMotion() {
           opacity: [0, 1],
           translateY: [16, 0],
           duration: 520,
-          easing: 'cubicBezier(.16, 1, .3, 1)',
+          easing: ASSEMBLY_EASING,
         })
       }
 
-      const detailTargets = section.matches('.cargo-section')
-        ? section.querySelectorAll('.cargo-card')
-        : section.matches('.cargo-types')
-          ? section.querySelectorAll('.cargo-type')
-          : []
+      // Отпечатки ложатся на стол, доворачиваясь к своему углу наклона.
+      if (section.matches('.cargo-section')) {
+        const prints = [...section.querySelectorAll('.cargo-card')]
+        const vector = assemblyVector()
+        const delayFor = spatialDelay(prints, 58)
 
-      if (detailTargets.length) {
         anime({
-          targets: detailTargets,
+          targets: prints,
           opacity: [0, 1],
-          translateY: [18, 0],
-          delay: anime.stagger(55),
-          duration: 560,
-          easing: 'cubicBezier(.16, 1, .3, 1)',
-          complete: () => detailTargets.forEach((target) => {
-            target.style.removeProperty('opacity')
-            target.style.removeProperty('transform')
-          }),
+          translateX: [-vector.x, 0],
+          translateY: [-vector.y, 0],
+          scale: [0.96, 1],
+          // Финальный угол — тот, что задан в CSS через --print-tilt,
+          // иначе после снятия инлайн-стилей отпечаток дёрнется.
+          rotate: (element) => {
+            const tilt = parseFloat(window.getComputedStyle(element).getPropertyValue('--print-tilt')) || 0
+            return [tilt - 3.5, tilt]
+          },
+          delay: (element) => delayFor(element),
+          duration: 680,
+          easing: ASSEMBLY_EASING,
+          complete: () => clearInline(prints),
         })
       }
 
       if (section.matches('.cargo-types')) {
+        assemble(section.querySelectorAll('.cargo-type'), { step: 66 })
+        // Деталь опускается на свою площадку чуть позже плиты.
+        const pads = [...section.querySelectorAll('.cargo-type__icon img')]
         anime({
-          targets: section.querySelectorAll('.cargo-type__icon'),
+          targets: pads,
           opacity: [0, 1],
-          scale: [0.72, 1],
-          rotate: [-4, 0],
-          delay: anime.stagger(70, { start: 160 }),
-          duration: 620,
-          easing: 'cubicBezier(.16, 1, .3, 1)',
-          complete: (animation) => animation.animatables.forEach(({ target }) => {
-            target.style.removeProperty('opacity')
-            target.style.removeProperty('transform')
-          }),
+          translateY: [-14, 0],
+          scale: [0.78, 1],
+          delay: anime.stagger(66, { start: 220 }),
+          duration: 560,
+          easing: ASSEMBLY_EASING,
+          complete: () => clearInline(pads),
         })
       }
 
+      // Станции маршрута встают по очереди — так же, как их проезжает фура.
       if (section.matches('.route-section')) {
-        const routeSteps = section.querySelectorAll('.route-step')
-        const routeTimeline = anime.timeline({ easing: 'cubicBezier(.16, 1, .3, 1)' })
+        const stations = [...section.querySelectorAll('.route-step')]
+        assemble(stations, { step: 92, duration: 720 })
 
-        routeTimeline
-          .add({
-            targets: routeSteps,
-            opacity: [0, 1],
-            translateY: [34, 0],
-            delay: anime.stagger(95),
-            duration: 760,
-            complete: () => routeSteps.forEach((target) => {
-              target.style.removeProperty('opacity')
-              target.style.removeProperty('transform')
-            }),
-          })
-          .add({
-            targets: section.querySelectorAll('.route-step__icon'),
-            opacity: [0, 1],
-            translateY: [12, 0],
-            scale: [0.68, 1],
-            delay: anime.stagger(70),
-            duration: 560,
-            complete: (animation) => animation.animatables.forEach(({ target }) => {
-              target.style.removeProperty('opacity')
-              target.style.removeProperty('transform')
-            }),
-          }, '-=670')
+        const icons = [...section.querySelectorAll('.route-step__icon')]
+        anime({
+          targets: icons,
+          opacity: [0, 1],
+          translateY: [-12, 0],
+          scale: [0.74, 1],
+          delay: anime.stagger(92, { start: 180 }),
+          duration: 560,
+          easing: ASSEMBLY_EASING,
+          complete: () => clearInline(icons),
+        })
       }
 
       if (isDeliverySection) {
-        const deliveryTimeline = anime.timeline({ easing: 'cubicBezier(.16, 1, .3, 1)' })
+        const deliveryTimeline = anime.timeline({ easing: ASSEMBLY_EASING })
 
         deliveryTimeline
           .add({
@@ -158,10 +227,7 @@ function initSectionMotion() {
             scale: [0.58, 1],
             delay: anime.stagger(130),
             duration: 420,
-            complete: () => deliveryNodes.forEach((target) => {
-              target.style.removeProperty('opacity')
-              target.style.removeProperty('transform')
-            }),
+            complete: () => clearInline([...deliveryNodes]),
           }, '-=720')
           .add({
             targets: deliveryDetails,
@@ -169,11 +235,18 @@ function initSectionMotion() {
             translateY: [16, 0],
             delay: anime.stagger(85),
             duration: 620,
-            complete: () => deliveryDetails.forEach((target) => {
-              target.style.removeProperty('opacity')
-              target.style.removeProperty('transform')
-            }),
+            complete: () => clearInline([...deliveryDetails]),
           }, '-=480')
+      }
+
+      // Ящики FAQ выезжают из панели.
+      if (section.matches('.faq-section')) {
+        assemble(section.querySelectorAll('.faq-list details'), { step: 38, duration: 520 })
+      }
+
+      // Шильдики контактов ложатся на панель.
+      if (section.matches('.contacts-section')) {
+        assemble(section.querySelectorAll('.contact-actions > a'), { step: 70, duration: 580 })
       }
 
       observer.unobserve(section)
@@ -319,3 +392,4 @@ initHeroMotion()
 initSectionMotion()
 initHeaderState()
 initFaqBehavior()
+initCursorMotion()

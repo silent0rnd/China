@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-hidden="true">
+  <defs>
+    <radialGradient id="contact">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="64.00" cy="80.00" rx="36.0" ry="15.0" fill="url(#contact)"/><polygon points="114.40,80.00 64.00,105.20 64.00,99.95 114.40,74.75" fill="#1b2229"/><polygon points="13.60,80.00 64.00,105.20 64.00,99.95 13.60,74.75" fill="#333d47"/><polygon points="64.00,49.55 114.40,74.75 64.00,99.95 13.60,74.75" fill="#5b6774"/><polygon points="103.90,74.75 64.00,94.70 64.00,67.40 103.90,47.45" fill="#1b2229"/><polygon points="24.10,74.75 64.00,94.70 64.00,67.40 24.10,47.45" fill="#333d47"/><polygon points="64.00,27.50 103.90,47.45 64.00,67.40 24.10,47.45" fill="#5b6774"/><polygon points="81.33,36.16 86.58,38.79 46.67,58.74 41.42,56.11" fill="#5b4a33"/><polygon points="46.67,36.16 86.58,56.11 81.33,58.74 41.42,38.79" fill="#5b4a33"/>
+</svg>

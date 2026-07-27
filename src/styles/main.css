@@ -73,6 +73,49 @@
   --container: min(100% - (var(--page-padding) * 2), 92.5rem);
   --section-space: clamp(5.5rem, 9vw, 8.5rem);
   --line: 0.0625rem solid var(--border);
+
+  /* --- Макет маршрута: единый свет --- */
+  /* Одна лампа над столом. Все фаски, блики и тени наследуют это направление. */
+  --light-angle: 152deg;
+  --light-warm: 232, 226, 214;
+  --light-tint: rgba(232, 226, 214, 0.055);
+
+  /* --- Макет маршрута: материал детали --- */
+  /* Плита ловит свет верхним краем и уходит в тень к нижнему.
+     Перепад внутри градиента важнее общей светлоты: именно он читается
+     как объём, а не как светло-серый прямоугольник. */
+  --model-plate: linear-gradient(var(--light-angle), #1a212a 0%, #12181f 30%, #0c1015 68%, #080b0e 100%);
+  --model-plate-raised: linear-gradient(var(--light-angle), #222a34 0%, #171e26 30%, #0f141a 68%, #0a0e11 100%);
+  --model-edge: rgba(var(--light-warm), 0.11);
+  --model-edge-strong: rgba(var(--light-warm), 0.2);
+  --model-edge-dark: rgba(0, 0, 0, 0.7);
+  --model-bevel: inset 0 0.0625rem 0 var(--model-edge), inset 0 -0.0625rem 0 var(--model-edge-dark), inset 0.0625rem 0 0 rgba(var(--light-warm), 0.04), inset -0.0625rem 0 0 rgba(0, 0, 0, 0.4);
+  --model-bevel-strong: inset 0 0.0625rem 0 var(--model-edge-strong), inset 0 -0.0625rem 0 rgba(0, 0, 0, 0.75), inset 0.0625rem 0 0 rgba(var(--light-warm), 0.07), inset -0.0625rem 0 0 rgba(0, 0, 0, 0.45);
+  --model-contact: 0 0.7rem 1.6rem -0.5rem rgba(0, 0, 0, 0.8), 0 0.15rem 0.4rem -0.1rem rgba(0, 0, 0, 0.6);
+  --model-lift: 0 1.8rem 3.4rem -0.8rem rgba(0, 0, 0, 0.85), 0 0.6rem 1.2rem -0.35rem rgba(0, 0, 0, 0.65);
+  --model-groove: inset 0 0.0625rem 0.22rem rgba(0, 0, 0, 0.72), inset 0 -0.0625rem 0 var(--model-edge);
+  --model-radius: 0.2rem;
+  /* Зерно должно ощущаться, а не читаться. Мелкая частота, низкая амплитуда. */
+  --model-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
+
+  /* Единый грейд для фотографий, чтобы отпечатки совпадали по тону
+     с графитовыми рендерами макета. */
+  /* Обесцвечивание, а не тонировка: собственный цвет фотографий (бирюза
+     контейнеров, ржавчина техники) — главное, что выбивает их из сцены. */
+  --print-grade: grayscale(0.82) saturate(0.9) contrast(1.08) brightness(0.78);
+  --print-grade-lifted: grayscale(0.46) saturate(1) contrast(1.04) brightness(0.98);
+
+  /* --- Макет маршрута: геометрия --- */
+  /* Угол дороги в hero. Швы, сборка и наклоны строятся по нему. */
+  --iso-angle: 30deg;
+  --iso-vector-x: 1.6rem;
+  --iso-vector-y: 0.92rem;
+
+  /* Позиция курсора внутри детали, нормализованная 0..1. Пишется из cursor.js. */
+  --mx: 0.5;
+  --my: 0.5;
+  --lamp: 0;
+
   color: var(--text-primary);
   background: var(--background-primary);
   color-scheme: dark;
@@ -88,7 +131,139 @@ button, input, textarea { font: inherit; }
 button { cursor: pointer; }
 a { color: inherit; text-decoration: none; }
 [id] { scroll-margin-top: 6rem; }
-main { position: relative; background: var(--background-primary); }
+main { position: relative; background: transparent; }
+
+/* ==========================================================================
+   МАКЕТ МАРШРУТА — общий слой материала
+   Вся страница стоит на одном столе. Каждая поверхность — деталь макета.
+   ========================================================================== */
+
+/* Стол. Одна фиксированная плоскость под всей страницей вместо
+   четырёх копий hero-PNG, которыми раньше подкладывались секции. */
+body::before {
+  position: fixed;
+  z-index: -10;
+  inset: 0;
+  content: '';
+  background:
+    radial-gradient(ellipse 120% 80% at 62% 8%, rgba(var(--light-warm), 0.045) 0%, transparent 58%),
+    radial-gradient(ellipse 100% 70% at 50% 100%, rgba(0, 0, 0, 0.5) 0%, transparent 60%),
+    var(--background-primary);
+  pointer-events: none;
+}
+
+/* Зерно стола — отдельным слоем, чтобы не пересчитывать градиенты. */
+body::after {
+  position: fixed;
+  z-index: -9;
+  inset: 0;
+  content: '';
+  background-image: var(--model-grain);
+  background-size: 200px 200px;
+  opacity: 0.012;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* Деталь макета: пластиковая плита с фаской и контактной тенью.
+   Заменяет плоскую рамку `1px solid var(--border)`.
+
+   Слои собраны в `background`, а не в псевдоэлементы: ::before и ::after
+   уже заняты у .cargo-card, .cargo-type, .route-step и .delivery-card. */
+.model-part,
+.cargo-card,
+.cargo-type,
+.route-step,
+.delivery-card,
+.faq-list details,
+.lead-dialog__panel {
+  position: relative;
+  isolation: isolate;
+  border: 0;
+  border-radius: var(--model-radius);
+  background:
+    /* блик лампы — позиция из --mx/--my, яркость из --lamp (пишет cursor.js) */
+    radial-gradient(
+      circle at calc(var(--mx) * 100%) calc(var(--my) * 100%),
+      rgba(var(--light-warm), calc(0.09 * var(--lamp))) 0%,
+      rgba(var(--light-warm), calc(0.03 * var(--lamp))) 28%,
+      transparent 64%
+    ),
+    var(--model-grain) 0 0 / 200px 200px,
+    var(--model-plate);
+  box-shadow: var(--model-bevel), var(--model-contact);
+  transition: box-shadow 320ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1);
+}
+
+/* Приподнятая деталь — реагирует и на hover, и на клавиатурный фокус. */
+:is(.model-part, .cargo-card, .cargo-type, .route-step, .delivery-card, .faq-list details):is(:hover, :focus-visible, :focus-within) {
+  background-image:
+    radial-gradient(
+      circle at calc(var(--mx) * 100%) calc(var(--my) * 100%),
+      rgba(var(--light-warm), calc(0.14 * var(--lamp))) 0%,
+      rgba(var(--light-warm), calc(0.05 * var(--lamp))) 28%,
+      transparent 64%
+    ),
+    var(--model-grain),
+    var(--model-plate-raised);
+  box-shadow: var(--model-bevel-strong), var(--model-lift);
+}
+
+/* Магнитный отклик. Деталь притягивается к курсору и наклоняется как
+   твёрдый объект — тень при этом уходит в противоположную сторону,
+   что и отличает физическую деталь от параллакса слоёв.
+   Переменные pull и tilt пишет src/motion/cursor.js. */
+.cursor-ready :is(.cargo-type, .route-step, .delivery-card):hover {
+  transform: perspective(60rem)
+    translate3d(var(--pull-x, 0), calc(var(--pull-y, 0px) - 0.3rem), 0)
+    rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg));
+}
+
+.cursor-ready :is(.button, .header-cta):hover {
+  transform: translate3d(calc(var(--pull-x, 0px) * 0.55), calc(var(--pull-y, 0px) * 0.55), 0);
+}
+
+/* Измерительные метки макета — тонкие чертёжные риски у курсора.
+   Только на крупных экранах и при точном указателе. */
+@media (min-width: 64rem) {
+  .cursor-ready .section__container::before {
+    position: absolute;
+    z-index: 0;
+    top: -1.5rem;
+    right: -1.5rem;
+    bottom: -1.5rem;
+    left: -1.5rem;
+    content: '';
+    background-image:
+      repeating-linear-gradient(90deg, rgba(var(--light-warm), 0.4) 0 0.0625rem, transparent 0.0625rem 3rem),
+      repeating-linear-gradient(180deg, rgba(var(--light-warm), 0.4) 0 0.0625rem, transparent 0.0625rem 3rem);
+    mask-image: radial-gradient(
+      circle 11rem at calc(var(--mx, 0.5) * 100%) calc(var(--my, 0.5) * 100%),
+      #000 0%,
+      rgba(0, 0, 0, 0.35) 42%,
+      transparent 74%
+    );
+    opacity: calc(0.2 * var(--near, 0));
+    pointer-events: none;
+    transition: opacity 420ms ease;
+  }
+}
+
+/* Гравированная табличка: утопленная площадка с моно-подписью. */
+.engraved {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.32rem 0.62rem;
+  border-radius: 0.12rem;
+  background: rgba(0, 0, 0, 0.32);
+  box-shadow: var(--model-groove);
+  color: var(--text-muted);
+  font: 500 0.66rem/1 'IBM Plex Mono', Consolas, monospace;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
 
 .skip-link { position: fixed; z-index: 100; top: 0.75rem; left: 0.75rem; padding: 0.75rem 1rem; transform: translateY(-160%); border-radius: 0.25rem; color: var(--cta-text); background: var(--cta-light); }
 .skip-link:focus { transform: translateY(0); }
@@ -116,18 +291,55 @@ main { position: relative; background: var(--background-primary); }
 .header-phone { display: none; white-space: nowrap; font-family: 'IBM Plex Mono', Consolas, monospace; }
 .header-phone b { font-size: 0.875rem; font-weight: 400; }
 .header-cta, .button { display: inline-flex; align-items: center; justify-content: center; min-height: 3.5rem; border-radius: 0.3rem; transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease, transform 180ms ease; }
-.header-cta { display: none; padding: 0 1.25rem; border: 0.0625rem solid var(--border-strong); color: var(--text-primary); background: rgba(7, 9, 11, 0.35); font-size: 0.875rem; }
-.header-cta:hover { border-color: #75808a; background: rgba(21, 26, 32, 0.8); }
+.header-cta { display: none; padding: 0 1.25rem; border: 0; color: var(--text-primary); background: var(--model-plate); box-shadow: var(--model-bevel), var(--model-contact); font-size: 0.875rem; }
+.header-cta:hover { background: var(--model-plate-raised); box-shadow: var(--model-bevel-strong), var(--model-lift); }
 .mobile-call { display: inline-flex; align-items: center; justify-content: center; width: 2.9rem; height: 2.9rem; border: 0; color: var(--text-primary); font-size: 1.5rem; }
 .menu-toggle { display: grid; width: 3rem; height: 3rem; align-content: center; gap: 0.31rem; padding: 0 0.65rem; border: 0; background: transparent; }
 .menu-toggle span { display: block; width: 100%; height: 0.12rem; background: var(--text-primary); }
 
 .hero { position: relative; isolation: isolate; min-height: 100svh; overflow: clip; background: var(--background-primary); }
-.hero::after { position: absolute; z-index: 0; right: 0; bottom: -0.0625rem; left: 0; height: clamp(7rem, 15vw, 13rem); content: ''; background: linear-gradient(to bottom, rgba(7, 9, 11, 0), var(--background-primary)); pointer-events: none; }
-.hero__background, .hero__background img { position: absolute; z-index: -2; inset: 0; display: block; width: 100%; height: 100%; }
+/* Край стола: макет уходит в плоскость, на которой стоят остальные секции. */
+.hero::after { position: absolute; z-index: 0; right: 0; bottom: -0.0625rem; left: 0; height: clamp(7rem, 15vw, 13rem); content: ''; background: linear-gradient(to bottom, rgba(7, 9, 11, 0) 0%, rgba(7, 9, 11, 0.72) 62%, var(--background-primary) 100%); box-shadow: inset 0 -0.0625rem 0 rgba(var(--light-warm), 0.05); pointer-events: none; }
+.hero__background, .hero__background img { position: absolute; z-index: -3; inset: 0; display: block; width: 100%; height: 100%; }
 .hero__background { inset: -0.45rem; width: calc(100% + 0.9rem); height: calc(100% + 0.9rem); }
-.hero__background img { object-fit: cover; object-position: center; will-change: transform; }
+.hero__background img { object-fit: cover; object-position: center; }
+
+/* Tilt-shift — подпись жанра миниатюры. Сильное размытие по верхнему и
+   нижнему краю, мягкое в середине. Работает через backdrop-filter, поэтому
+   второй копии изображения не требуется.
+
+   Линза осмотра вычитается из маски: под курсором макет резкий.
+   Переменные lens пишет src/motion/cursor.js. */
+.hero__tiltshift {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  backdrop-filter: blur(0.42rem);
+  mask-image:
+    linear-gradient(180deg, #000 0%, #000 9%, rgba(0, 0, 0, 0.34) 30%, rgba(0, 0, 0, 0.34) 62%, #000 92%, #000 100%),
+    radial-gradient(circle 13rem at var(--lens-x, 50%) var(--lens-y, 50%), rgba(0, 0, 0, var(--lens, 0)) 0%, rgba(0, 0, 0, calc(0.6 * var(--lens, 0))) 46%, transparent 78%);
+  mask-composite: subtract;
+  -webkit-mask-composite: source-out;
+  pointer-events: none;
+}
+
 .hero__atmosphere { position: absolute; z-index: -1; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(5, 7, 8, 0.34) 0%, rgba(5, 7, 8, 0.08) 50%, transparent 78%); }
+
+/* Жизнь макета: одна лампа над погранпереходом очень медленно дышит.
+   Камера неподвижна — движется только освещение. */
+.hero__lamps {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(circle 22rem at 72% 40%, rgba(255, 214, 158, 0.05) 0%, transparent 64%);
+  pointer-events: none;
+  animation: model-lamp-breath 9s ease-in-out infinite alternate;
+}
+
+@keyframes model-lamp-breath {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
 .hero__content { position: relative; z-index: 1; width: var(--container); min-height: 100svh; margin: 0 auto; padding-top: clamp(10.6rem, 22vh, 13.5rem); padding-bottom: 3.5rem; }
 .eyebrow { display: inline-flex; align-items: center; gap: 0.8rem; color: var(--text-secondary); font: 500 0.7rem/1.4 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
 .eyebrow__mark { width: 1.55rem; height: 0.08rem; background: var(--accent); }
@@ -142,8 +354,9 @@ h1 { max-width: 100%; margin: 1.6rem 0; font-size: clamp(2rem, 8vw, 2.4rem); fon
 .button--primary:hover { background: #fff; }
 .button--primary span { font-size: 1.6rem; line-height: 1; transition: transform 180ms ease; }
 .button--primary:hover span { transform: translateX(0.25rem); }
-.button--secondary { border-color: var(--border-strong); color: var(--text-primary); background: rgba(7, 9, 11, 0.23); }
-.button--secondary:hover { border-color: #7f8991; background: rgba(21, 26, 32, 0.74); }
+/* Вторичная кнопка — деталь макета того же материала. */
+.button--secondary { border-color: transparent; color: var(--text-primary); background: var(--model-plate); box-shadow: var(--model-bevel), var(--model-contact); }
+.button--secondary:hover { background: var(--model-plate-raised); box-shadow: var(--model-bevel-strong), var(--model-lift); }
 .hero__hint { max-width: 31rem; margin: 0.8rem 0 0; color: var(--text-muted); font-size: 0.76rem; line-height: 1.5; }
 
 .mobile-menu { position: fixed; z-index: 30; inset: 0; display: none; grid-template-rows: auto 1fr auto; min-height: 100dvh; padding: max(1.5rem, env(safe-area-inset-top)) max(var(--page-padding), env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(var(--page-padding), env(safe-area-inset-left)); overflow-y: auto; overscroll-behavior: contain; background: rgba(7, 9, 11, 0.98); }
@@ -155,25 +368,34 @@ h1 { max-width: 100%; margin: 1.6rem 0; font-size: clamp(2rem, 8vw, 2.4rem); fon
 .mobile-menu nav { display: grid; align-content: center; gap: 1.25rem; padding: 2rem 0; }
 .mobile-menu nav a { font-size: clamp(1.95rem, 8vw, 2.5rem); letter-spacing: -0.04em; }
 .mobile-menu__contacts { display: grid; gap: 0.7rem; color: var(--text-secondary); font-family: 'IBM Plex Mono', Consolas, monospace; }
-.mobile-menu__contacts button { display: flex; justify-content: space-between; align-items: center; min-height: 3.4rem; margin-top: 0.6rem; padding: 0 1rem; border: 0.0625rem solid var(--border-strong); color: var(--text-primary); background: transparent; }
+.mobile-menu__contacts button { display: flex; justify-content: space-between; align-items: center; min-height: 3.4rem; margin-top: 0.6rem; padding: 0 1rem; border: 0; border-radius: var(--model-radius); color: var(--text-primary); background: var(--model-plate); box-shadow: var(--model-bevel), var(--model-contact); }
 
-.lead-dialog { width: min(100% - 2rem, 35rem); max-height: min(100dvh - 2rem, 46rem); margin: auto; padding: 0; overflow-y: auto; overscroll-behavior: contain; border: 0.0625rem solid var(--border-strong); color: var(--text-primary); background: var(--surface); box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.56); }
+/* Панель опускается на стол, а не просто появляется. */
+.lead-dialog { width: min(100% - 2rem, 35rem); max-height: min(100dvh - 2rem, 46rem); margin: auto; padding: 0; overflow-y: auto; overscroll-behavior: contain; border: 0; border-radius: var(--model-radius); color: var(--text-primary); background: transparent; box-shadow: var(--model-bevel-strong), 0 2.6rem 6rem -1rem rgba(0, 0, 0, 0.78); }
+.lead-dialog[open] { animation: model-place 420ms cubic-bezier(.16, 1, .3, 1); }
 .lead-dialog::backdrop { background: rgba(5, 6, 8, 0.78); backdrop-filter: blur(0.2rem); }
+
+@keyframes model-place {
+  from { opacity: 0; transform: translateY(-1.4rem) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
 .lead-dialog__panel { position: relative; padding: clamp(1.5rem, 4vw, 2.6rem); }
 .dialog-close { position: absolute; top: 0.75rem; right: 0.75rem; }
 .lead-dialog h2 { max-width: 14ch; margin: 1.35rem 0 0.8rem; font-size: clamp(2rem, 5vw, 3rem); font-weight: 500; line-height: 1.05; letter-spacing: -0.04em; }
 .lead-dialog h2 + p { max-width: 34rem; margin: 0; color: var(--text-secondary); line-height: 1.55; }
 .lead-form { display: grid; gap: 1rem; margin-top: 1.6rem; }
 .lead-form label { display: grid; gap: 0.45rem; color: var(--text-secondary); font-size: 0.86rem; }
-.lead-form input, .lead-form textarea { width: 100%; border: var(--line); border-radius: 0.22rem; padding: 0.85rem 0.9rem; color: var(--text-primary); background: var(--background-primary); }
+/* Поля ввода — утопленные пазы в панели. */
+.lead-form input, .lead-form textarea { width: 100%; border: 0; border-radius: 0.14rem; padding: 0.85rem 0.9rem; color: var(--text-primary); background: rgba(0, 0, 0, 0.34); box-shadow: var(--model-groove); }
 .lead-form input { min-height: 3.2rem; }
 .lead-form textarea { resize: vertical; }
-.lead-form input:focus, .lead-form textarea:focus { border-color: var(--focus); outline: 0; }
+.lead-form input:focus, .lead-form textarea:focus { outline: 0; box-shadow: var(--model-groove), inset 0 0 0 0.0625rem var(--focus); }
 .lead-form .button { margin-top: 0.3rem; }
 .lead-form__status { min-height: 1.3rem; margin: 0; color: #cfa29e; font-size: 0.8rem; line-height: 1.4; }
 
-.section { position: relative; isolation: isolate; overflow: clip; padding: var(--section-space) 0; background: var(--background-primary); }
-.section::after { position: absolute; z-index: -1; top: 0; right: 0; left: 0; height: 0.0625rem; content: ''; background: linear-gradient(90deg, transparent, rgba(58, 66, 74, 0.55) 22%, rgba(58, 66, 74, 0.55) 78%, transparent); }
+.section { position: relative; isolation: isolate; overflow: clip; padding: var(--section-space) 0; background: transparent; }
+/* Фрезерованный шов между секциями: тёмная канавка со светлой кромкой снизу. */
+.section::after { position: absolute; z-index: -1; top: 0; right: 0; left: 0; height: 0.125rem; content: ''; background: linear-gradient(180deg, rgba(0, 0, 0, 0.68) 0%, rgba(0, 0, 0, 0.68) 50%, rgba(var(--light-warm), 0.055) 50%, rgba(var(--light-warm), 0.055) 100%); mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent); }
 .section__container { position: relative; z-index: 1; width: var(--container); margin: 0 auto; }
 .section-kicker { display: inline-flex; align-items: center; gap: 0.75rem; margin: 0 0 1.3rem; color: var(--text-secondary); font: 500 0.7rem/1.4 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
 .section-kicker span { display: block; width: 1.55rem; height: 0.08rem; background: var(--accent); }
@@ -188,108 +410,151 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 .text-action { display: inline-flex; align-items: center; gap: 0.9rem; width: fit-content; min-height: 2.75rem; padding: 0; border: 0; color: var(--text-primary); background: transparent; font-size: 1rem; font-weight: 500; text-align: left; }
 .text-action span { font-size: 1.4rem; transition: transform 180ms ease; }
 .text-action:hover span { transform: translateX(0.2rem); }
-.button--outline { margin-top: 2rem; border-color: var(--border-strong); color: var(--text-primary); background: transparent; box-shadow: none; }
-.button--outline:hover { border-color: #7f8991; background: var(--surface-elevated); }
+.button--outline { margin-top: 2rem; border-color: transparent; color: var(--text-primary); background: var(--model-plate); box-shadow: var(--model-bevel), var(--model-contact); }
+.button--outline:hover { background: var(--model-plate-raised); box-shadow: var(--model-bevel-strong), var(--model-lift); }
 
-.cargo-section { margin-top: -0.0625rem; padding-top: clamp(4.5rem, 7vw, 7rem); background: #080a0c; }
-.cargo-section::before { position: absolute; z-index: -2; top: -16rem; right: -10%; width: min(82rem, 88vw); height: 56rem; content: ''; background: url('/images/hero-background-desktop-minimal.png') center top / cover no-repeat; filter: grayscale(1) contrast(1.08); opacity: 0.11; transform: scaleX(-1); pointer-events: none; }
+.cargo-section { margin-top: -0.0625rem; padding-top: clamp(4.5rem, 7vw, 7rem); background: transparent; }
 .cargo-section__layout { display: grid; gap: 2.75rem; }
 .section__intro > p:not(.section-kicker):not(.section__lead) { margin: 1.35rem 0 0; color: var(--text-secondary); line-height: 1.6; }
 .cargo-gallery { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(16.5rem, 78vw); gap: 0.75rem; padding: 0 0 1rem; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: inline mandatory; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
-.cargo-card { position: relative; display: block; min-height: 22rem; padding: 0; overflow: hidden; border: var(--line); border-radius: 0.18rem; background: var(--surface); color: var(--text-primary); scroll-snap-align: start; text-align: left; box-shadow: inset 0 0.0625rem 0 rgba(255, 255, 255, 0.035), 0 1.5rem 4rem rgba(0, 0, 0, 0.28); }
-.cargo-card img { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(0.66) contrast(1.08) brightness(0.74) hue-rotate(4deg); transition: filter 260ms cubic-bezier(.2, 0, 0, 1), transform 260ms cubic-bezier(.2, 0, 0, 1); }
-.cargo-card::after { position: absolute; inset: 42% 0 0; content: ''; background: linear-gradient(transparent, rgba(5, 6, 8, 0.96)); pointer-events: none; }
-.cargo-card span { position: absolute; z-index: 1; right: 1rem; bottom: 1rem; left: 1rem; padding-top: 0.8rem; border-top: 0.0625rem solid rgba(241, 243, 244, 0.16); font-size: 1rem; font-weight: 500; line-height: 1.35; }
-.cargo-card:hover { border-color: var(--border-strong); }
-.cargo-card:hover img { filter: saturate(0.78) contrast(1.08) brightness(0.86) hue-rotate(2deg); transform: scale(1.015); }
+/* Отпечаток, лежащий на столе макета: бумажная кромка, детерминированный
+   поворот, контактная тень под нижним краем. */
+.cargo-card { display: block; min-height: 22rem; padding: 0.4rem 0.4rem 0.4rem; overflow: hidden; color: var(--text-primary); scroll-snap-align: start; text-align: left; transform: rotate(var(--print-tilt, 0deg)); transform-origin: 50% 92%; }
+.cargo-card:nth-child(1) { --print-tilt: -1.1deg; }
+.cargo-card:nth-child(2) { --print-tilt: 0.8deg; }
+.cargo-card:nth-child(3) { --print-tilt: 1.4deg; }
+.cargo-card:nth-child(4) { --print-tilt: -0.6deg; }
+.cargo-card:nth-child(5) { --print-tilt: 1deg; }
+.cargo-card:nth-child(6) { --print-tilt: -1.3deg; }
+.cargo-card img { display: block; width: 100%; height: 100%; object-fit: cover; filter: var(--print-grade); transition: filter 320ms cubic-bezier(.2, 0, 0, 1), transform 320ms cubic-bezier(.2, 0, 0, 1); }
+.cargo-card::after { position: absolute; inset: 42% 0.4rem 0.4rem; content: ''; background: linear-gradient(transparent, rgba(5, 6, 8, 0.94)); pointer-events: none; }
+.cargo-card span { position: absolute; z-index: 2; right: 1.2rem; bottom: 1.2rem; left: 1.2rem; padding-top: 0.8rem; border-top: 0.0625rem solid rgba(241, 243, 244, 0.16); font-size: 1rem; font-weight: 500; line-height: 1.35; }
+/* Hover: снимок выравнивается и приподнимается со стола. */
+.cargo-card:hover, .cargo-card:focus-visible { z-index: 3; transform: rotate(0deg) translateY(-0.4rem) scale(1.012); }
+.cargo-card:hover img, .cargo-card:focus-visible img { filter: var(--print-grade-lifted); }
 
-.cargo-types { padding: clamp(3.5rem, 5vw, 4.75rem) 0; background: #090c0f; }
+.cargo-types { padding: clamp(3.5rem, 5vw, 4.75rem) 0; background: transparent; }
 .cargo-types h2 { max-width: 21ch; font-size: clamp(2.2rem, 4vw, 3.65rem); }
 .cargo-types__grid { display: grid; gap: 0.7rem; margin-top: 2rem; }
-.cargo-type { position: relative; display: grid; align-content: space-between; min-height: 12.5rem; padding: 1.25rem; overflow: hidden; border: var(--line); background: radial-gradient(circle at 100% 0%, rgba(169, 43, 39, 0.1), transparent 42%), rgba(13, 17, 21, 0.82); transition: border-color 260ms ease, background-color 260ms ease, box-shadow 320ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
-.cargo-type::after { position: absolute; right: 1rem; bottom: 1rem; width: 2.2rem; height: 0.0625rem; content: ''; background: var(--accent); opacity: 0.45; transform: scaleX(0.45); transform-origin: right; transition: opacity 260ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
-.cargo-type__icon { position: relative; z-index: 1; display: grid; width: 3.25rem; height: 3.25rem; place-items: center; border: var(--line); color: #a9b0b5; background: rgba(7, 9, 11, 0.48); transition: border-color 260ms ease, color 260ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
-.cargo-type__icon img { width: 1.95rem; height: 1.95rem; transition: filter 260ms ease; }
+/* Маркированная деталь макета: объект стоит на плите, подпись — на табличке. */
+/* align-content: start — при space-between заголовки расходятся по вертикали,
+   потому что описания разной длины. */
+.cargo-type { display: grid; align-content: start; min-height: 12.5rem; padding: 1.25rem; overflow: hidden; }
+/* Риска маркировки в углу плиты. */
+.cargo-type::after { position: absolute; z-index: 2; right: 1rem; bottom: 1rem; width: 2.2rem; height: 0.0625rem; content: ''; background: var(--accent); opacity: 0.45; transform: scaleX(0.45); transform-origin: right; transition: opacity 260ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
+/* Площадка, на которой стоит деталь: утоплена в плиту. */
+.cargo-type__icon { z-index: 1; display: grid; width: 3.6rem; height: 3.6rem; place-items: center; border-radius: 0.14rem; background: rgba(0, 0, 0, 0.28); box-shadow: var(--model-groove); color: #a9b0b5; transition: box-shadow 300ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
+.cargo-type__icon img { width: 2.7rem; height: 2.7rem; filter: drop-shadow(0 0.2rem 0.35rem rgba(0, 0, 0, 0.7)); transition: filter 280ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
 .cargo-type__content { position: relative; z-index: 1; max-width: 27rem; margin-top: 1.6rem; }
 .cargo-type h3 { font-size: clamp(1.2rem, 1.55vw, 1.55rem); }
 .cargo-type p { margin: 0.72rem 0 0; color: #aeb4b8; font-size: 0.92rem; line-height: 1.5; }
-.cargo-type:hover { z-index: 2; border-color: rgba(169, 43, 39, 0.72); background-color: rgba(18, 23, 28, 0.94); box-shadow: 0 1.6rem 3.5rem rgba(0, 0, 0, 0.3), inset 0 0 2.5rem rgba(169, 43, 39, 0.05); transform: translateY(-0.35rem); }
-.cargo-type:hover::after { opacity: 1; transform: scaleX(1); }
-.cargo-type:hover .cargo-type__icon { border-color: rgba(169, 43, 39, 0.7); transform: translateY(-0.22rem) scale(1.05); }
-.cargo-type:hover .cargo-type__icon img { filter: brightness(1.7); }
+.cargo-type:hover, .cargo-type:focus-within { z-index: 2; }
+.cargo-type:hover::after, .cargo-type:focus-within::after { opacity: 1; transform: scaleX(1); }
+/* Лампа поднимается над деталью — тень под ней удлиняется. */
+.cargo-type:hover .cargo-type__icon, .cargo-type:focus-within .cargo-type__icon { box-shadow: var(--model-groove), 0 0 1.6rem rgba(var(--light-warm), 0.06); }
+.cargo-type:hover .cargo-type__icon img, .cargo-type:focus-within .cargo-type__icon img { filter: brightness(1.25) drop-shadow(0 0.42rem 0.6rem rgba(0, 0, 0, 0.78)); transform: translateY(-0.16rem) scale(1.05); }
 
-.route-section { background: #080a0c; }
-.route-section::before { position: absolute; z-index: -2; top: -18rem; right: -8rem; width: min(78rem, 82vw); height: 58rem; content: ''; background: url('/images/hero-background-desktop-minimal.png') center / cover no-repeat; filter: grayscale(1); opacity: 0.2; pointer-events: none; }
+.route-section { background: transparent; }
 .route-section__head { max-width: 60rem; }
-.route-steps { position: relative; display: grid; gap: 0; margin: 3.5rem 0 0; padding: 0; border-left: var(--line); border-top: var(--line); list-style: none; }
-.route-step { position: relative; min-height: 14.5rem; padding: 2.3rem 1.4rem 1.45rem; overflow: hidden; border-right: var(--line); border-bottom: var(--line); background: rgba(13, 17, 21, 0.76); box-shadow: inset 0 0.0625rem 0 rgba(255, 255, 255, 0.025); transition: border-color 260ms ease, background-color 260ms ease, box-shadow 340ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
-.route-step::before { position: absolute; top: -0.34rem; left: 1.35rem; width: 0.68rem; height: 0.68rem; border: 0.1rem solid var(--accent); border-radius: 50%; content: ''; background: var(--background-primary); box-shadow: 0 0 0 0.32rem rgba(7, 9, 11, 0.92), 0 0 1.1rem rgba(169, 43, 39, 0.18); }
-.route-step::after { position: absolute; top: -0.0625rem; right: 0; left: 0; height: 0.0625rem; content: ''; background: repeating-linear-gradient(90deg, var(--accent) 0 0.42rem, transparent 0.42rem 0.86rem); opacity: 0.7; transform: scaleX(1); transform-origin: left; transition: transform 950ms cubic-bezier(.16, 1, .3, 1); }
+/* Шесть станций вдоль одной дороги. Дорога рисуется в .route-road (SVG),
+   станции стоят на столе отдельными плитами. */
+.route-steps { position: relative; z-index: 1; display: grid; gap: 0.7rem; margin: 3.5rem 0 0; padding: 0; list-style: none; }
+.route-step { min-height: 14.5rem; padding: 2.3rem 1.4rem 1.45rem; overflow: hidden; }
+/* Фонарь станции. */
+.route-step::before { position: absolute; z-index: 2; top: 1.15rem; left: 1.4rem; width: 0.5rem; height: 0.5rem; border-radius: 50%; content: ''; background: var(--accent); box-shadow: 0 0 0 0.22rem rgba(0, 0, 0, 0.55), 0 0 0.7rem rgba(169, 43, 39, 0.35); opacity: 0.5; transition: opacity 300ms ease, box-shadow 320ms ease; }
+/* Отрезок дороги, входящий в станцию: прочерчивается при появлении секции. */
+.route-step::after { position: absolute; z-index: 2; top: 1.34rem; right: 0; left: 2.1rem; height: 0.0625rem; content: ''; background: repeating-linear-gradient(90deg, rgba(var(--light-warm), 0.42) 0 0.42rem, transparent 0.42rem 0.86rem); opacity: 0.5; transform: scaleX(1); transform-origin: left; transition: transform 950ms cubic-bezier(.16, 1, .3, 1); }
 .motion-ready .route-step::after { transform: scaleX(0); }
 .motion-ready .route-section.is-revealed .route-step::after { transform: scaleX(1); }
+/* Груз, идущий по маршруту: световой импульс проходит станции по очереди. */
+.route-step__runner { position: absolute; z-index: 3; top: 1.25rem; right: 0; left: 2.1rem; height: 0.19rem; background: linear-gradient(90deg, transparent 0%, rgba(169, 43, 39, 0.15) 4%, var(--accent) 9%, rgba(169, 43, 39, 0.15) 14%, transparent 18%, transparent 100%); background-size: 620% 100%; background-position: 0% 0; opacity: 0; pointer-events: none; }
+.motion-ready .route-section.is-revealed .route-step__runner { animation: route-run 1400ms cubic-bezier(.4, 0, .2, 1) forwards; }
+.route-step:nth-child(1) .route-step__runner { animation-delay: 200ms; }
+.route-step:nth-child(2) .route-step__runner { animation-delay: 480ms; }
+.route-step:nth-child(3) .route-step__runner { animation-delay: 760ms; }
+.route-step:nth-child(4) .route-step__runner { animation-delay: 1040ms; }
+.route-step:nth-child(5) .route-step__runner { animation-delay: 1320ms; }
+.route-step:nth-child(6) .route-step__runner { animation-delay: 1600ms; }
+
+@keyframes route-run {
+  0% { opacity: 0; background-position: 0% 0; }
+  14% { opacity: 1; }
+  78% { opacity: 1; }
+  100% { opacity: 0; background-position: 100% 0; }
+}
+
 .route-step__number { display: block; margin-bottom: 1.2rem; color: var(--text-muted); font: 400 0.82rem/1 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.08em; transition: color 260ms ease; }
-.route-step__icon { display: block; width: 2.65rem; height: 2.65rem; margin-bottom: 1.25rem; opacity: 0.82; transform-origin: left center; transition: opacity 260ms ease, filter 260ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
+.route-step__icon { display: block; width: 3.5rem; height: 3.5rem; margin-bottom: 1.25rem; filter: drop-shadow(0 0.22rem 0.4rem rgba(0, 0, 0, 0.72)); transform-origin: left bottom; transition: filter 280ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
 .route-step h3 { font-size: clamp(1.15rem, 1.45vw, 1.55rem); transition: color 260ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
 .route-step p { margin: 0.9rem 0 0; color: var(--text-secondary); font-size: 0.94rem; line-height: 1.55; }
-.route-step:hover { z-index: 2; border-color: rgba(169, 43, 39, 0.58); background-color: rgba(20, 25, 30, 0.96); box-shadow: 0 1.8rem 4rem rgba(0, 0, 0, 0.34), inset 0 0 3rem rgba(169, 43, 39, 0.06); transform: translateY(-0.45rem); }
-.route-step:hover::before { border-color: #e54b45; box-shadow: 0 0 0 0.34rem rgba(7, 9, 11, 0.92), 0 0 1.8rem rgba(229, 75, 69, 0.48); }
-.route-step:hover .route-step__number { color: #c7ccd0; }
-.route-step:hover .route-step__icon { opacity: 1; filter: brightness(1.7) drop-shadow(0 0 0.8rem rgba(229, 75, 69, 0.32)); transform: translateX(0.28rem) scale(1.08); }
-.route-step:hover h3 { color: #fff; transform: translateX(0.18rem); }
+/* Hover зажигает фонарь именно этой станции. */
+.route-step:hover, .route-step:focus-within { z-index: 2; }
+.route-step:hover::before, .route-step:focus-within::before { opacity: 1; box-shadow: 0 0 0 0.22rem rgba(0, 0, 0, 0.55), 0 0 1.5rem rgba(229, 75, 69, 0.6); }
+.route-step:hover .route-step__number, .route-step:focus-within .route-step__number { color: #c7ccd0; }
+.route-step:hover .route-step__icon, .route-step:focus-within .route-step__icon { filter: brightness(1.22) drop-shadow(0 0.45rem 0.65rem rgba(0, 0, 0, 0.8)); transform: translateY(-0.18rem) scale(1.06); }
+.route-step:hover h3, .route-step:focus-within h3 { color: #fff; }
 
-.delivery-section { background: #080b0e; }
-.delivery-section::before { position: absolute; z-index: -2; inset: 4% -8% -10% 18%; content: ''; background: url('/images/hero-background-desktop-minimal.png') 68% 38% / cover no-repeat; filter: grayscale(1) contrast(1.12); opacity: 0.08; pointer-events: none; }
+.delivery-section { background: transparent; }
 .delivery-section h2 { max-width: 17ch; }
-.delivery-corridor { position: relative; margin-top: 2.6rem; overflow: hidden; border: var(--line); background: rgba(9, 12, 15, 0.92); box-shadow: inset 0 0.0625rem 0 rgba(255, 255, 255, 0.025), 0 2rem 5rem rgba(0, 0, 0, 0.24); }
-.delivery-corridor::before { position: absolute; inset: 0; content: ''; background: url('/images/hero-background-desktop-minimal.png') 62% 46% / cover no-repeat; filter: grayscale(1) contrast(1.15); opacity: 0.055; pointer-events: none; }
-.delivery-track { position: absolute; z-index: 3; top: 1.7rem; bottom: 1.7rem; left: 2rem; width: 0.0625rem; background: rgba(169, 43, 39, 0.24); pointer-events: none; }
-.delivery-track__progress { position: absolute; inset: 0; background: var(--accent); box-shadow: 0 0 1rem rgba(169, 43, 39, 0.28); transform: scaleY(1); transform-origin: top; }
-.delivery-grid { position: relative; z-index: 1; display: grid; }
-.delivery-card { position: relative; display: grid; min-height: 16rem; padding: 1.5rem 1.25rem 1.6rem 4.35rem; overflow: hidden; border-bottom: var(--line); background: rgba(10, 13, 16, 0.52); transition: border-color 260ms ease, background-color 320ms ease, box-shadow 320ms ease; }
-.delivery-card:last-child { border-bottom: 0; }
-.delivery-card::after { position: absolute; inset: -30% -55%; content: ''; background: linear-gradient(108deg, transparent 38%, rgba(255, 255, 255, 0.055) 50%, transparent 62%); opacity: 0; transform: translateX(-38%); transition: opacity 240ms ease, transform 720ms cubic-bezier(.16, 1, .3, 1); pointer-events: none; }
+/* Три параллельные полосы макета вместо трёх карточек. */
+.delivery-corridor { position: relative; margin-top: 2.6rem; }
+.delivery-track { position: absolute; z-index: 3; top: 1.7rem; bottom: 1.7rem; left: 2rem; width: 0.0625rem; background: rgba(var(--light-warm), 0.1); pointer-events: none; }
+.delivery-track__progress { position: absolute; inset: 0; background: linear-gradient(180deg, transparent, rgba(var(--light-warm), 0.5) 12%, rgba(var(--light-warm), 0.5) 88%, transparent); transform: scaleY(1); transform-origin: top; }
+.delivery-grid { position: relative; z-index: 1; display: grid; gap: 0.7rem; }
+/* align-content: start — иначе строки грида растягиваются по высоте карточки
+   и номера 01/02/03 расходятся по вертикали при разной длине описаний. */
+.delivery-card { display: grid; align-content: start; min-height: 16rem; padding: 1.5rem 1.25rem 1.6rem 4.35rem; overflow: hidden; }
+/* Дорожное полотно, по которому едет транспорт этой полосы. */
+.delivery-card::after { position: absolute; z-index: 0; right: 0; bottom: 3.2rem; left: 0; height: 2.6rem; content: ''; background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.34) 26%, rgba(0, 0, 0, 0.34) 74%, transparent), repeating-linear-gradient(90deg, transparent 0 2.2rem, rgba(var(--light-warm), 0.16) 2.2rem 3.6rem); opacity: 0; transition: opacity 320ms ease; pointer-events: none; }
 .delivery-card__meta { display: flex; align-items: center; justify-content: space-between; }
 .delivery-card__number { color: var(--text-muted); font: 400 1.35rem/1 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.04em; transition: color 260ms ease; }
-.delivery-card__node { position: absolute; z-index: 4; top: 1.72rem; left: 1.64rem; width: 0.72rem; height: 0.72rem; border: 0.1rem solid var(--accent); border-radius: 50%; background: #090c0f; box-shadow: 0 0 0 0.34rem rgba(9, 12, 15, 0.92), 0 0 1rem rgba(169, 43, 39, 0.18); transition: border-color 260ms ease, box-shadow 320ms ease; }
-.delivery-card__visual { position: absolute; top: 1.25rem; right: 1.3rem; display: grid; width: 4.4rem; height: 4.4rem; place-items: center; border: 0.0625rem solid rgba(104, 114, 122, 0.34); background: rgba(7, 9, 11, 0.58); box-shadow: inset 0 0 1.8rem rgba(255, 255, 255, 0.018); transition: border-color 280ms ease, background-color 280ms ease, box-shadow 320ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
-.delivery-card__visual img { width: 2.8rem; height: 2.8rem; opacity: 0.82; transition: filter 280ms ease, opacity 280ms ease; }
+.delivery-card__node { position: absolute; z-index: 4; top: 1.72rem; left: 1.64rem; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0.24rem rgba(0, 0, 0, 0.6), 0 0 0.8rem rgba(169, 43, 39, 0.35); opacity: 0.55; transition: opacity 300ms ease, box-shadow 320ms ease; }
+/* Площадка, на которой стоит транспорт. */
+.delivery-card__visual { position: absolute; z-index: 2; top: 1.25rem; right: 1.3rem; display: grid; width: 4.8rem; height: 4.8rem; place-items: center; border-radius: 0.14rem; background: rgba(0, 0, 0, 0.26); box-shadow: var(--model-groove); transition: box-shadow 320ms ease; }
+.delivery-card__visual img { width: 3.1rem; height: 3.1rem; filter: drop-shadow(0 0.24rem 0.4rem rgba(0, 0, 0, 0.72)); transition: filter 280ms ease, transform 620ms cubic-bezier(.16, 1, .3, 1); }
 .delivery-card__body { position: relative; z-index: 1; align-self: end; padding-top: 4.8rem; }
-.delivery-card__term { margin: 0 0 1rem; color: #c6a87f; font: 500 0.72rem/1.4 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.04em; transition: color 260ms ease; }
-.delivery-card h3 { max-width: 16ch; transition: color 260ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
+.delivery-card__term { display: inline-flex; align-items: center; margin: 0 0 1rem; padding: 0.3rem 0.6rem; border-radius: 0.12rem; background: rgba(0, 0, 0, 0.3); box-shadow: var(--model-groove); color: #c6a87f; font: 500 0.72rem/1.4 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.06em; transition: color 260ms ease; }
+.delivery-card h3 { max-width: 16ch; transition: color 260ms ease; }
 .delivery-card p:not(.delivery-card__term) { margin: 1rem 0 0; color: var(--text-secondary); line-height: 1.55; }
-.delivery-card:hover { border-color: rgba(169, 43, 39, 0.5); background-color: rgba(18, 23, 28, 0.9); box-shadow: inset 0 0 3rem rgba(169, 43, 39, 0.045); }
-.delivery-card:hover::after { opacity: 1; transform: translateX(38%); }
-.delivery-card:hover .delivery-card__number { color: #c8cdd1; }
-.delivery-card:hover .delivery-card__node { border-color: #e54b45; box-shadow: 0 0 0 0.34rem rgba(9, 12, 15, 0.92), 0 0 1.6rem rgba(229, 75, 69, 0.44); }
-.delivery-card:hover .delivery-card__visual { border-color: rgba(169, 43, 39, 0.68); background-color: rgba(15, 19, 23, 0.96); box-shadow: inset 0 0 2.2rem rgba(169, 43, 39, 0.07), 0 0 1.8rem rgba(0, 0, 0, 0.26); transform: translateX(0.45rem); }
-.delivery-card:hover .delivery-card__visual img { filter: brightness(1.65) drop-shadow(0 0 0.75rem rgba(229, 75, 69, 0.24)); opacity: 1; }
-.delivery-card:hover .delivery-card__term { color: #ddc398; }
-.delivery-card:hover h3 { color: #fff; transform: translateX(0.18rem); }
+/* Hover: полоса подсвечивается, транспорт проезжает по ней и останавливается. */
+.delivery-card:hover::after, .delivery-card:focus-within::after { opacity: 1; }
+.delivery-card:hover .delivery-card__number, .delivery-card:focus-within .delivery-card__number { color: #c8cdd1; }
+.delivery-card:hover .delivery-card__node, .delivery-card:focus-within .delivery-card__node { opacity: 1; box-shadow: 0 0 0 0.24rem rgba(0, 0, 0, 0.6), 0 0 1.5rem rgba(229, 75, 69, 0.58); }
+.delivery-card:hover .delivery-card__visual, .delivery-card:focus-within .delivery-card__visual { box-shadow: var(--model-groove), 0 0 1.8rem rgba(var(--light-warm), 0.07); }
+.delivery-card:hover .delivery-card__visual img, .delivery-card:focus-within .delivery-card__visual img { filter: brightness(1.22) drop-shadow(0 0.45rem 0.65rem rgba(0, 0, 0, 0.8)); transform: translateX(0.5rem); }
+.delivery-card:hover .delivery-card__term, .delivery-card:focus-within .delivery-card__term { color: #ddc398; }
+.delivery-card:hover h3, .delivery-card:focus-within h3 { color: #fff; }
 
-.contacts-section { padding: clamp(4.5rem, 7vw, 7rem) 0; background: #080a0c; }
-.contacts-section::before { position: absolute; z-index: -2; right: -20%; bottom: -18rem; width: min(88rem, 100vw); height: 68rem; content: ''; background: url('/images/hero-background-desktop-minimal.png') center / cover no-repeat; filter: grayscale(1) contrast(1.05); opacity: 0.12; pointer-events: none; }
+.contacts-section { padding: clamp(4.5rem, 7vw, 7rem) 0; background: transparent; }
 .contacts-section__layout { display: grid; gap: 2.5rem; }
 .contacts-section h2 { max-width: none; }
-.contact-actions { display: grid; border-top: var(--line); }
-.contact-actions > a { display: grid; grid-template-columns: minmax(6rem, 0.35fr) 1fr; align-items: center; gap: 1rem; min-height: 5.4rem; padding: 1rem 0; border-bottom: var(--line); }
-.contact-actions span { color: var(--text-muted); font: 500 0.68rem/1 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
-.contact-actions strong { font-size: clamp(1rem, 2vw, 1.35rem); font-weight: 500; overflow-wrap: anywhere; }
+/* Гравированные шильдики на панели — единственное тёплое место на макете. */
+.contact-actions { display: grid; gap: 0.5rem; }
+.contact-actions > a { position: relative; display: grid; grid-template-columns: minmax(6rem, 0.35fr) 1fr; align-items: center; gap: 1rem; min-height: 5.4rem; padding: 1rem 1.15rem; border-radius: 0.14rem; background: linear-gradient(var(--light-angle), rgba(179, 138, 85, 0.075) 0%, rgba(179, 138, 85, 0.025) 52%, rgba(0, 0, 0, 0.2) 100%); box-shadow: inset 0 0.0625rem 0 rgba(179, 138, 85, 0.2), inset 0 -0.0625rem 0 rgba(0, 0, 0, 0.5), var(--model-contact); transition: box-shadow 300ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
+.contact-actions span { color: rgba(179, 138, 85, 0.72); font: 500 0.68rem/1 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.09em; text-transform: uppercase; }
+.contact-actions strong { font-size: clamp(1rem, 2vw, 1.35rem); font-weight: 500; overflow-wrap: anywhere; text-shadow: 0 0.0625rem 0 rgba(0, 0, 0, 0.7); }
+.contact-actions > a:hover, .contact-actions > a:focus-visible { box-shadow: inset 0 0.0625rem 0 rgba(179, 138, 85, 0.4), inset 0 -0.0625rem 0 rgba(0, 0, 0, 0.55), var(--model-lift); transform: translateY(-0.2rem); }
 .contact-actions > a:hover strong { color: #fff; }
-.contact-actions__messengers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; padding-top: 1rem; }
-.contact-actions__messengers button { min-height: 3rem; border: var(--line); color: var(--text-secondary); background: rgba(13, 17, 21, 0.64); font-size: 0.82rem; }
-.contact-actions__messengers button:hover { border-color: var(--border-strong); color: var(--text-primary); }
-.faq-section { background: #0a0d10; }
+.contact-actions__messengers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; padding-top: 0.5rem; }
+.contact-actions__messengers button { min-height: 3rem; border: 0; border-radius: 0.14rem; color: var(--text-secondary); background: var(--model-plate); box-shadow: var(--model-bevel), var(--model-contact); font-size: 0.82rem; transition: box-shadow 300ms ease, color 220ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
+.contact-actions__messengers button:hover, .contact-actions__messengers button:focus-visible { color: var(--text-primary); background: var(--model-plate-raised); box-shadow: var(--model-bevel-strong), var(--model-lift); transform: translateY(-0.15rem); }
+.faq-section { background: transparent; }
 .faq-section__layout { display: grid; gap: 2.75rem; }
-.faq-list { counter-reset: faq; display: grid; border-top: var(--line); }
-.faq-list details { counter-increment: faq; position: relative; border-bottom: var(--line); }
-.faq-list summary { display: grid; grid-template-columns: 2.6rem 1fr auto; align-items: center; min-height: 5rem; padding: 1rem 0; cursor: pointer; font-size: 1rem; font-weight: 500; line-height: 1.3; list-style: none; }
+/* Выдвижные ящики каталога макета. */
+.faq-list { counter-reset: faq; display: grid; gap: 0.35rem; }
+.faq-list details { counter-increment: faq; overflow: hidden; }
+.faq-list summary { display: grid; grid-template-columns: 2.6rem 1fr auto; align-items: center; min-height: 5rem; padding: 1rem 1.1rem; cursor: pointer; font-size: 1rem; font-weight: 500; line-height: 1.3; list-style: none; }
 .faq-list summary::-webkit-details-marker { display: none; }
 .faq-list summary::before { color: var(--text-muted); content: counter(faq, decimal-leading-zero); font: 400 0.72rem/1 'IBM Plex Mono', Consolas, monospace; }
-.faq-list summary::after { color: var(--text-secondary); content: '+'; font-size: 1.6rem; font-weight: 400; }
-.faq-list details[open] summary::after { color: var(--accent); content: '−'; }
-.faq-list details p { margin: 0; padding: 0 1rem 1.5rem 2.6rem; color: var(--text-secondary); line-height: 1.6; }
+/* Утопленная ручка ящика вместо знака «плюс». */
+.faq-list summary::after { width: 1.7rem; height: 0.42rem; border-radius: 0.1rem; background: rgba(0, 0, 0, 0.4); box-shadow: var(--model-groove); content: ''; transition: background-color 260ms ease, box-shadow 260ms ease; }
+.faq-list details[open] summary::after { background: rgba(169, 43, 39, 0.5); box-shadow: var(--model-groove), 0 0 0.9rem rgba(169, 43, 39, 0.35); }
+.faq-list details p { margin: 0; padding: 0 1.5rem 1.5rem 3.7rem; color: var(--text-secondary); line-height: 1.6; }
+/* Открытый ящик выехал: тень падает на соседние. */
+.faq-list details[open] { z-index: 2; box-shadow: var(--model-bevel-strong), var(--model-lift); }
 
-.site-footer { padding: 3.8rem 0; border-top: var(--line); background: #090c0f; }
+/* Торец стола: срез плоскости под всей страницей. */
+.site-footer { position: relative; padding: 3.8rem 0; border-top: 0; background: linear-gradient(180deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.62) 100%); box-shadow: inset 0 0.0625rem 0 rgba(var(--light-warm), 0.06); }
 .site-footer__grid { display: grid; gap: 2.5rem; }
 .site-footer__grid > div { display: grid; align-content: start; gap: 0.6rem; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.45; }
 .site-footer__grid p { margin: 0; }
@@ -299,7 +564,8 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 .site-footer__grid > div > a, .site-footer__grid > div > button { display: flex; align-items: center; min-height: 2.75rem; }
 .brand { min-height: 2.75rem; }
 
-.lightbox { width: min(100% - 1.5rem, 78rem); max-height: min(100dvh - 1.5rem, 58rem); margin: auto; padding: 0; border: var(--line); background: var(--background-primary); box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.65); }
+.lightbox { width: min(100% - 1.5rem, 78rem); max-height: min(100dvh - 1.5rem, 58rem); margin: auto; padding: 0; border: 0; border-radius: var(--model-radius); background: var(--model-plate); box-shadow: var(--model-bevel-strong), 0 2.6rem 6rem -1rem rgba(0, 0, 0, 0.8); }
+.lightbox[open] { animation: model-place 420ms cubic-bezier(.16, 1, .3, 1); }
 .lightbox::backdrop { background: rgba(5, 6, 8, 0.88); }
 .lightbox__panel { position: relative; display: grid; max-height: inherit; padding: clamp(0.75rem, 2vw, 1.25rem); }
 .lightbox__panel .dialog-close { z-index: 1; top: 0.5rem; right: 0.5rem; background: rgba(7, 9, 11, 0.72); }
@@ -307,6 +573,35 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 .lightbox p { margin: 0.8rem 0 0; color: var(--text-secondary); font-size: 0.85rem; }
 
 .motion-ready .section > .section__container { opacity: 0; transform: translateY(1rem); }
+
+/* Однократный проход света по секции при входе во вьюпорт.
+   Идёт под тем же углом, что и лампа макета, и связывает все блоки
+   в одно событие вместо шести независимых появлений. */
+.section::before {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  content: '';
+  background: linear-gradient(
+    var(--light-angle),
+    transparent 38%,
+    rgba(var(--light-warm), 0.055) 48%,
+    rgba(var(--light-warm), 0.02) 54%,
+    transparent 64%
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+.motion-ready .section.is-revealed::before {
+  animation: model-light-sweep 1150ms cubic-bezier(.16, 1, .3, 1) 120ms 1;
+}
+
+@keyframes model-light-sweep {
+  0% { opacity: 0; transform: translate3d(-42%, -22%, 0); }
+  22% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(42%, 22%, 0); }
+}
 
 @media (min-width: 48rem) {
   :root { --page-padding: 2rem; }
@@ -320,10 +615,9 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .cargo-card:nth-child(6) { aspect-ratio: 4 / 3; }
   .cargo-types__grid { grid-template-columns: repeat(2, 1fr); }
   .delivery-track { top: 8.15rem; right: 1.5rem; bottom: auto; left: 1.5rem; width: auto; height: 0.0625rem; }
-  .delivery-track__progress { transform: scaleX(1); transform-origin: left; }
+  .delivery-track__progress { background: linear-gradient(90deg, transparent, rgba(var(--light-warm), 0.5) 12%, rgba(var(--light-warm), 0.5) 88%, transparent); transform: scaleX(1); transform-origin: left; }
   .delivery-grid { grid-template-columns: repeat(3, 1fr); }
-  .delivery-card { min-height: 23rem; padding: 1.5rem 1.4rem 1.7rem; border-right: var(--line); border-bottom: 0; }
-  .delivery-card:last-child { border-right: 0; }
+  .delivery-card { min-height: 23rem; padding: 1.5rem 1.4rem 1.7rem; }
   .delivery-card__node { top: 7.81rem; left: 1.42rem; }
   .delivery-card__visual { top: 1.45rem; right: 1.4rem; width: 5.2rem; height: 5.2rem; }
   .delivery-card__visual img { width: 3.2rem; height: 3.2rem; }
@@ -335,7 +629,7 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .hero__actions { display: flex; align-items: center; max-width: none; }
   .button { min-width: 17.5rem; }
   .button--secondary { min-width: 15rem; }
-  .hero__content { padding-top: clamp(4.75rem, 8.25vh, 6rem); }
+  .hero__content { padding-top: clamp(6.75rem, 11vh, 8.5rem); }
   h1 { max-width: 19ch; font-size: clamp(2.55rem, 4.75vw, 5rem); line-height: 1.03; }
   .hero__copy--desktop { display: inline; }
   .hero__copy--mobile { display: none; }
@@ -382,20 +676,28 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .section { padding: clamp(4.75rem, 19vw, 6.25rem) 0; }
   .cargo-section { padding-top: 4.5rem; }
   .cargo-types { padding: 3.75rem 0; }
-  .cargo-section::before, .route-section::before, .delivery-section::before, .contacts-section::before { opacity: 0.07; }
   .cargo-types__grid { margin-top: 2.2rem; }
   .cargo-type { min-height: 12.5rem; }
-  .route-steps { margin-top: 2.7rem; border: 0; }
-  .route-step { min-height: 15rem; padding: 2.1rem 1.2rem 1.3rem 3.25rem; border-top: 0; border-right: 0; border-left: 0; }
-  .route-step::before { top: 2.1rem; left: 0.55rem; }
-  .route-step::after { top: 0; bottom: 0; left: 0.87rem; width: 0.0625rem; height: auto; background: repeating-linear-gradient(180deg, var(--accent) 0 0.42rem, transparent 0.42rem 0.86rem); transform: scaleY(1); transform-origin: top; }
+  .route-steps { margin-top: 2.7rem; }
+  .route-step { min-height: 15rem; padding: 2.1rem 1.2rem 1.3rem 3.25rem; }
+  .route-step::before { top: 2.1rem; left: 0.62rem; }
+  /* На мобильном дорога идёт вертикально через колонку станций. */
+  .route-step::after { top: 2.32rem; right: auto; bottom: 0; left: 0.84rem; width: 0.0625rem; height: auto; background: repeating-linear-gradient(180deg, rgba(var(--light-warm), 0.42) 0 0.42rem, transparent 0.42rem 0.86rem); transform: scaleY(1); transform-origin: top; }
   .motion-ready .route-step::after { transform: scaleY(0); }
   .motion-ready .route-section.is-revealed .route-step::after { transform: scaleY(1); }
+  /* Дорога вертикальная — импульс идёт сверху вниз. */
+  .route-step__runner { top: 2.32rem; right: auto; bottom: 0; left: 0.78rem; width: 0.19rem; height: auto; background: linear-gradient(180deg, transparent 0%, rgba(169, 43, 39, 0.15) 4%, var(--accent) 9%, rgba(169, 43, 39, 0.15) 14%, transparent 18%, transparent 100%); background-size: 100% 620%; background-position: 0 0%; }
+  @keyframes route-run {
+    0% { opacity: 0; background-position: 0 0%; }
+    14% { opacity: 1; }
+    78% { opacity: 1; }
+    100% { opacity: 0; background-position: 0 100%; }
+  }
   .route-step__number { margin-bottom: 1rem; }
   .delivery-corridor { margin-top: 2.2rem; }
   .contact-actions > a { grid-template-columns: 1fr; gap: 0.35rem; }
   .faq-list summary { grid-template-columns: 2.25rem 1fr auto; }
-  .faq-list details p { padding-left: 2.25rem; }
+  .faq-list details p { padding-left: 3.35rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -404,4 +706,10 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .route-step::after { transform: none !important; }
   .delivery-track__progress, .delivery-card__node, .delivery-card__visual, .delivery-card__body { opacity: 1 !important; transform: none !important; }
   .hero__background img { transform: none !important; }
+  /* Движение макета выключено полностью: свет не дышит, импульс не идёт,
+     проход света по секции не запускается, линза осмотра не работает. */
+  .hero__lamps, .section::before, .route-step__runner { animation: none !important; opacity: 0 !important; }
+  .hero__tiltshift { mask-image: linear-gradient(180deg, #000 0%, #000 9%, rgba(0, 0, 0, 0.34) 30%, rgba(0, 0, 0, 0.34) 62%, #000 92%, #000 100%) !important; }
+  .cursor-ready .section__container::before { opacity: 0 !important; }
+  .cargo-card { transform: none !important; }
 }
