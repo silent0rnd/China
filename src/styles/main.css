@@ -340,6 +340,47 @@ body::after {
   from { opacity: 0.55; }
   to { opacity: 1; }
 }
+
+/* Огни макета.
+   Точки задаются в процентах от кадра изображения, а не от вьюпорта:
+   .hero__glow-frame повторяет геометрию object-fit: cover, поэтому огни
+   остаются на фурах при любых пропорциях окна. */
+.hero__glow { position: absolute; z-index: -1; inset: -0.45rem; width: calc(100% + 0.9rem); height: calc(100% + 0.9rem); overflow: hidden; pointer-events: none; }
+.hero__glow-frame { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; aspect-ratio: 1586 / 992; transform: translate(-50%, -50%); }
+.hero__glow-frame > i { position: absolute; display: block; border-radius: 50%; transform: translate(-50%, -50%); }
+
+/* Габаритные огни фур: разные периоды, чтобы пульсация не читалась
+   как одна CSS-анимация на всех. */
+.hero__glow-tail { width: 1.05%; padding-bottom: 1.68%; height: 0; background: radial-gradient(circle, rgba(233, 74, 62, 0.95) 0%, rgba(233, 74, 62, 0.32) 34%, transparent 70%); }
+.hero__glow-tail:nth-of-type(1) { top: 57.7%; left: 71.6%; animation: model-blink 3.7s ease-in-out infinite; }
+.hero__glow-tail:nth-of-type(2) { top: 70.6%; left: 61.5%; animation: model-blink 5.3s ease-in-out infinite 0.8s; }
+.hero__glow-head { width: 1.5%; padding-bottom: 2.4%; height: 0; top: 34.8%; left: 82.4%; background: radial-gradient(circle, rgba(255, 236, 198, 0.8) 0%, rgba(255, 226, 170, 0.22) 38%, transparent 72%); animation: model-blink 6.9s ease-in-out infinite 1.6s; }
+.hero__glow-lamp { width: 2.2%; padding-bottom: 3.5%; height: 0; background: radial-gradient(circle, rgba(255, 226, 170, 0.34) 0%, rgba(255, 214, 150, 0.1) 40%, transparent 74%); }
+.hero__glow-lamp:nth-of-type(4) { top: 38.5%; left: 66.5%; animation: model-flicker 4.3s steps(1, end) infinite; }
+.hero__glow-lamp:nth-of-type(5) { top: 43.5%; left: 74.5%; animation: model-flicker 7.1s steps(1, end) infinite 2.2s; }
+.hero__glow-booth { width: 1.8%; padding-bottom: 2.9%; height: 0; top: 42.8%; left: 60%; background: radial-gradient(circle, rgba(255, 219, 158, 0.42) 0%, rgba(255, 210, 150, 0.12) 42%, transparent 76%); animation: model-blink 8.6s ease-in-out infinite 3.1s; }
+
+@keyframes model-blink {
+  0%, 100% { opacity: 0.42; }
+  50% { opacity: 1; }
+}
+
+/* Лампа перехода мигает ступенчато — так ведёт себя реальный светильник,
+   а не плавная CSS-анимация. */
+@keyframes model-flicker {
+  0%, 88%, 92%, 100% { opacity: 1; }
+  90%, 94% { opacity: 0.35; }
+}
+
+/* Луч досмотра идёт вдоль дороги через погранпереход. */
+.hero__beam { position: absolute; top: -30%; left: 40%; width: 26%; height: 160%; background: linear-gradient(90deg, transparent, rgba(var(--light-warm), 0.05) 46%, rgba(var(--light-warm), 0.02) 60%, transparent); transform: rotate(28deg); animation: model-sweep 17s ease-in-out infinite; }
+
+@keyframes model-sweep {
+  0%, 62% { opacity: 0; transform: translateX(-38%) rotate(28deg); }
+  70% { opacity: 1; }
+  92% { opacity: 0; transform: translateX(64%) rotate(28deg); }
+  100% { opacity: 0; transform: translateX(64%) rotate(28deg); }
+}
 .hero__content { position: relative; z-index: 1; width: var(--container); min-height: 100svh; margin: 0 auto; padding-top: clamp(10.6rem, 22vh, 13.5rem); padding-bottom: 3.5rem; }
 .eyebrow { display: inline-flex; align-items: center; gap: 0.8rem; color: var(--text-secondary); font: 500 0.7rem/1.4 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
 .eyebrow__mark { width: 1.55rem; height: 0.08rem; background: var(--accent); }
@@ -462,26 +503,27 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 .route-step { min-height: 14.5rem; padding: 2.3rem 1.4rem 1.45rem; overflow: hidden; }
 /* Фонарь станции. */
 .route-step::before { position: absolute; z-index: 2; top: 1.15rem; left: 1.4rem; width: 0.5rem; height: 0.5rem; border-radius: 50%; content: ''; background: var(--accent); box-shadow: 0 0 0 0.22rem rgba(0, 0, 0, 0.55), 0 0 0.7rem rgba(169, 43, 39, 0.35); opacity: 0.5; transition: opacity 300ms ease, box-shadow 320ms ease; }
-/* Отрезок дороги, входящий в станцию: прочерчивается при появлении секции. */
-.route-step::after { position: absolute; z-index: 2; top: 1.34rem; right: 0; left: 2.1rem; height: 0.0625rem; content: ''; background: repeating-linear-gradient(90deg, rgba(var(--light-warm), 0.42) 0 0.42rem, transparent 0.42rem 0.86rem); opacity: 0.5; transform: scaleX(1); transform-origin: left; transition: transform 950ms cubic-bezier(.16, 1, .3, 1); }
-.motion-ready .route-step::after { transform: scaleX(0); }
-.motion-ready .route-section.is-revealed .route-step::after { transform: scaleX(1); }
-/* Груз, идущий по маршруту: световой импульс проходит станции по очереди. */
-.route-step__runner { position: absolute; z-index: 3; top: 1.25rem; right: 0; left: 2.1rem; height: 0.19rem; background: linear-gradient(90deg, transparent 0%, rgba(169, 43, 39, 0.15) 4%, var(--accent) 9%, rgba(169, 43, 39, 0.15) 14%, transparent 18%, transparent 100%); background-size: 620% 100%; background-position: 0% 0; opacity: 0; pointer-events: none; }
-.motion-ready .route-section.is-revealed .route-step__runner { animation: route-run 1400ms cubic-bezier(.4, 0, .2, 1) forwards; }
-.route-step:nth-child(1) .route-step__runner { animation-delay: 200ms; }
-.route-step:nth-child(2) .route-step__runner { animation-delay: 480ms; }
-.route-step:nth-child(3) .route-step__runner { animation-delay: 760ms; }
-.route-step:nth-child(4) .route-step__runner { animation-delay: 1040ms; }
-.route-step:nth-child(5) .route-step__runner { animation-delay: 1320ms; }
-.route-step:nth-child(6) .route-step__runner { animation-delay: 1600ms; }
 
-@keyframes route-run {
-  0% { opacity: 0; background-position: 0% 0; }
-  14% { opacity: 1; }
-  78% { opacity: 1; }
-  100% { opacity: 0; background-position: 100% 0; }
-}
+/* Дорога диорамы. Путь строится в src/motion/route.js по фактическим
+   позициям фонарей, поэтому одинаково работает на 6, 3 и 1 колонке.
+   Полотно — широкая тёмная линия, поверх неё осевая разметка. */
+/* overflow: hidden обязателен — обратный участок маршрута уходит за края
+   холста, и его хвосты не должны торчать за пределами секции. */
+.route-road { position: absolute; z-index: 3; inset: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+/* Полотно чуть светлее стола — иначе асфальт на графите не читается. */
+.route-road__bed { fill: none; stroke: rgba(var(--light-warm), 0.075); stroke-width: 15; stroke-linecap: round; stroke-linejoin: round; }
+.route-road__kerb { fill: none; stroke: rgba(0, 0, 0, 0.6); stroke-width: 18; stroke-linecap: round; stroke-linejoin: round; }
+.route-road__dashes { fill: none; stroke: rgba(var(--light-warm), 0.55); stroke-width: 1.5; stroke-linecap: butt; stroke-dasharray: 7 10; }
+/* Маска прочерчивания: заведомо шире полотна, чтобы не срезать его края. */
+.route-road__reveal { fill: none; stroke: #fff; stroke-width: 22; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Фура идёт по дороге под управлением прокрутки. */
+.route-truck { position: absolute; z-index: 4; top: 0; left: 0; width: 3.6rem; height: 3.6rem; opacity: 0; filter: drop-shadow(0 0.3rem 0.5rem rgba(0, 0, 0, 0.85)); pointer-events: none; transition: opacity 300ms ease; will-change: transform; }
+
+/* Станция включается в момент, когда фура до неё доехала. */
+.route-step.is-lit::before { opacity: 1; box-shadow: 0 0 0 0.22rem rgba(0, 0, 0, 0.55), 0 0 1.4rem rgba(229, 75, 69, 0.55); }
+.route-step.is-lit .route-step__number { color: #c7ccd0; }
+.route-step.is-lit .route-step__icon { filter: brightness(1.14) drop-shadow(0 0.32rem 0.5rem rgba(0, 0, 0, 0.78)); }
 
 .route-step__number { display: block; margin-bottom: 1.2rem; color: var(--text-muted); font: 400 0.82rem/1 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.08em; transition: color 260ms ease; }
 .route-step__icon { display: block; width: 3.5rem; height: 3.5rem; margin-bottom: 1.25rem; filter: drop-shadow(0 0.22rem 0.4rem rgba(0, 0, 0, 0.72)); transform-origin: left bottom; transition: filter 280ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
@@ -538,6 +580,53 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 .contact-actions__messengers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; padding-top: 0.5rem; }
 .contact-actions__messengers button { min-height: 3rem; border: 0; border-radius: 0.14rem; color: var(--text-secondary); background: var(--model-plate); box-shadow: var(--model-bevel), var(--model-contact); font-size: 0.82rem; transition: box-shadow 300ms ease, color 220ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
 .contact-actions__messengers button:hover, .contact-actions__messengers button:focus-visible { color: var(--text-primary); background: var(--model-plate-raised); box-shadow: var(--model-bevel-strong), var(--model-lift); transform: translateY(-0.15rem); }
+/* ==========================================================================
+   ПОДБОР СХЕМЫ — интерактивный блок
+   Масштаб читается за счёт фигурки постоянного размера рядом с транспортом,
+   который растёт вместе с грузом.
+   ========================================================================== */
+.fit-section { background: transparent; }
+.fit-section__layout { display: grid; gap: 2rem; }
+.fit-intro h2 { max-width: 16ch; }
+
+/* Сцена: площадка макета, на которой стоит подобранный транспорт. */
+.fit-stage { position: relative; display: grid; gap: 1.25rem; padding: 1.5rem; border-radius: var(--model-radius); background: rgba(0, 0, 0, 0.3); box-shadow: var(--model-groove); }
+/* Обе детали нарисованы в одном холсте 128 и выводятся одной шириной,
+   поэтому их модельные единицы совпадают. Ставим их в общую систему
+   координат и разводим сдвигом в процентах от этой же ширины —
+   так сопоставление размеров остаётся честным на любом экране. */
+.fit-scene { position: relative; min-height: 13rem; }
+/* Транспорт растёт вместе с грузом, фигурка остаётся неизменной —
+   именно их сопоставление и передаёт масштаб.
+   Масштаб живёт на обёртке: смену детали анимирует anime.js через inline
+   transform самой картинки, и два владельца transform не должны совпадать. */
+.fit-scene__mount { position: absolute; bottom: 0.5rem; left: 50%; display: block; width: clamp(7rem, 18vw, 11rem); transform: translateX(-72%) scale(var(--fit-scale, 1)); transform-origin: center bottom; transition: transform 420ms cubic-bezier(.16, 1, .3, 1); }
+.fit-scene__transport { display: block; width: 100%; height: auto; filter: drop-shadow(0 0.5rem 0.9rem rgba(0, 0, 0, 0.8)); }
+/* Фигурка рисуется в тех же модельных единицах, что и транспорт, поэтому
+   её ширина в CSS равна ширине транспорта: соотношение задано в геометрии. */
+.fit-scene__figure { position: absolute; bottom: 0.5rem; left: 50%; display: block; width: clamp(7rem, 18vw, 11rem); height: auto; transform: translateX(var(--fit-figure-x, -14%)); transition: transform 420ms cubic-bezier(.16, 1, .3, 1); filter: drop-shadow(0 0.3rem 0.5rem rgba(0, 0, 0, 0.78)); }
+.fit-result { display: grid; gap: 0.4rem; margin: 0; padding-top: 1.1rem; border-top: 0.0625rem solid rgba(var(--light-warm), 0.08); }
+.fit-result strong { font-size: clamp(1.15rem, 1.7vw, 1.5rem); font-weight: 500; letter-spacing: -0.02em; }
+.fit-result span { color: var(--text-secondary); font-size: 0.94rem; line-height: 1.55; }
+
+/* Пульты управления — утопленные пазы с моно-показаниями. */
+.fit-controls { display: grid; align-content: start; justify-items: stretch; gap: 1.5rem; }
+.fit-controls .engraved { justify-self: start; }
+.fit-control { display: grid; gap: 0.7rem; }
+.fit-control__head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; color: var(--text-secondary); font-size: 0.9rem; }
+.fit-control__head output { color: var(--text-primary); font: 500 1.05rem/1 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.02em; }
+.fit-control input[type='range'] { width: 100%; height: 2.75rem; margin: 0; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; }
+.fit-control input[type='range']::-webkit-slider-runnable-track { height: 0.5rem; border-radius: 0.25rem; background: rgba(0, 0, 0, 0.42); box-shadow: var(--model-groove); }
+.fit-control input[type='range']::-moz-range-track { height: 0.5rem; border-radius: 0.25rem; background: rgba(0, 0, 0, 0.42); box-shadow: var(--model-groove); }
+.fit-control input[type='range']::-webkit-slider-thumb { width: 1.6rem; height: 1.6rem; margin-top: -0.55rem; border: 0; border-radius: 0.2rem; background: var(--model-plate-raised); box-shadow: var(--model-bevel-strong), var(--model-contact); -webkit-appearance: none; appearance: none; transition: box-shadow 240ms ease; }
+.fit-control input[type='range']::-moz-range-thumb { width: 1.6rem; height: 1.6rem; border: 0; border-radius: 0.2rem; background: var(--model-plate-raised); box-shadow: var(--model-bevel-strong), var(--model-contact); }
+.fit-control input[type='range']:hover::-webkit-slider-thumb { box-shadow: var(--model-bevel-strong), var(--model-lift); }
+.fit-control input[type='range']:focus-visible { outline: 0; }
+.fit-control input[type='range']:focus-visible::-webkit-slider-thumb { box-shadow: var(--model-bevel-strong), 0 0 0 0.15rem var(--focus); }
+.fit-control input[type='range']:focus-visible::-moz-range-thumb { box-shadow: var(--model-bevel-strong), 0 0 0 0.15rem var(--focus); }
+.fit-disclaimer { margin: 0; color: var(--text-muted); font-size: 0.8rem; line-height: 1.5; }
+.fit-controls .button { margin-top: 0.25rem; }
+
 .faq-section { background: transparent; }
 .faq-section__layout { display: grid; gap: 2.75rem; }
 /* Выдвижные ящики каталога макета. */
@@ -646,6 +735,8 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .faq-section__layout { grid-template-columns: minmax(16rem, 0.58fr) minmax(0, 1.18fr); align-items: start; gap: clamp(3rem, 7vw, 8rem); }
   .faq-section__layout > div:first-child { position: sticky; top: 7rem; }
   .faq-section__layout > .button { grid-column: 2; width: fit-content; }
+  .fit-section__layout { grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.85fr); align-items: start; gap: clamp(2rem, 5vw, 4.5rem); }
+  .fit-intro { grid-column: 1 / -1; }
 }
 
 @media (min-width: 75rem) {
@@ -673,6 +764,8 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .brand__mark { width: 1.8rem; height: 1.8rem; }
   .brand small { display: none; }
   .hero::after { height: 7rem; }
+  /* На мобильном другой рендер сцены, координаты огней к нему не подходят. */
+  .hero__glow-frame > i { display: none; }
   .section { padding: clamp(4.75rem, 19vw, 6.25rem) 0; }
   .cargo-section { padding-top: 4.5rem; }
   .cargo-types { padding: 3.75rem 0; }
@@ -680,19 +773,11 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .cargo-type { min-height: 12.5rem; }
   .route-steps { margin-top: 2.7rem; }
   .route-step { min-height: 15rem; padding: 2.1rem 1.2rem 1.3rem 3.25rem; }
+  /* Фонарь у левого края: дорога на мобильном идёт вертикально
+     через колонку станций, её строит route.js по этим же координатам. */
   .route-step::before { top: 2.1rem; left: 0.62rem; }
-  /* На мобильном дорога идёт вертикально через колонку станций. */
-  .route-step::after { top: 2.32rem; right: auto; bottom: 0; left: 0.84rem; width: 0.0625rem; height: auto; background: repeating-linear-gradient(180deg, rgba(var(--light-warm), 0.42) 0 0.42rem, transparent 0.42rem 0.86rem); transform: scaleY(1); transform-origin: top; }
-  .motion-ready .route-step::after { transform: scaleY(0); }
-  .motion-ready .route-section.is-revealed .route-step::after { transform: scaleY(1); }
-  /* Дорога вертикальная — импульс идёт сверху вниз. */
-  .route-step__runner { top: 2.32rem; right: auto; bottom: 0; left: 0.78rem; width: 0.19rem; height: auto; background: linear-gradient(180deg, transparent 0%, rgba(169, 43, 39, 0.15) 4%, var(--accent) 9%, rgba(169, 43, 39, 0.15) 14%, transparent 18%, transparent 100%); background-size: 100% 620%; background-position: 0 0%; }
-  @keyframes route-run {
-    0% { opacity: 0; background-position: 0 0%; }
-    14% { opacity: 1; }
-    78% { opacity: 1; }
-    100% { opacity: 0; background-position: 0 100%; }
-  }
+  .route-road__bed { stroke-width: 11; }
+  .route-truck { width: 2.9rem; height: 2.9rem; }
   .route-step__number { margin-bottom: 1rem; }
   .delivery-corridor { margin-top: 2.2rem; }
   .contact-actions > a { grid-template-columns: 1fr; gap: 0.35rem; }
@@ -703,12 +788,15 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
   .motion-ready .section > .section__container { opacity: 1 !important; transform: none !important; }
-  .route-step::after { transform: none !important; }
+  /* Диорама показывается собранной: дорога прочерчена, все станции зажжены,
+     фура стоит в конце маршрута. Логику этого держит route.js. */
+  .route-truck { transition: none !important; }
   .delivery-track__progress, .delivery-card__node, .delivery-card__visual, .delivery-card__body { opacity: 1 !important; transform: none !important; }
   .hero__background img { transform: none !important; }
   /* Движение макета выключено полностью: свет не дышит, импульс не идёт,
      проход света по секции не запускается, линза осмотра не работает. */
-  .hero__lamps, .section::before, .route-step__runner { animation: none !important; opacity: 0 !important; }
+  .hero__lamps, .section::before, .hero__beam { animation: none !important; opacity: 0 !important; }
+  .hero__glow-frame > i { animation: none !important; opacity: 0.6 !important; }
   .hero__tiltshift { mask-image: linear-gradient(180deg, #000 0%, #000 9%, rgba(0, 0, 0, 0.34) 30%, rgba(0, 0, 0, 0.34) 62%, #000 92%, #000 100%) !important; }
   .cursor-ready .section__container::before { opacity: 0 !important; }
   .cargo-card { transform: none !important; }

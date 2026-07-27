@@ -44,6 +44,19 @@
         <div class="hero__tiltshift" aria-hidden="true"></div>
         <div class="hero__atmosphere" aria-hidden="true"></div>
         <div class="hero__lamps" aria-hidden="true"></div>
+        <!-- Огни макета. Рамка повторяет кадрирование object-fit: cover,
+             поэтому точки остаются на фурах при любых пропорциях окна. -->
+        <div class="hero__glow" aria-hidden="true">
+          <div class="hero__glow-frame">
+            <i class="hero__glow-tail"></i>
+            <i class="hero__glow-tail"></i>
+            <i class="hero__glow-head"></i>
+            <i class="hero__glow-lamp"></i>
+            <i class="hero__glow-lamp"></i>
+            <i class="hero__glow-booth"></i>
+            <span class="hero__beam"></span>
+          </div>
+        </div>
 
         <div class="hero__content">
           <p class="eyebrow"><span class="eyebrow__mark" aria-hidden="true"></span>Доставка сложных B2B-грузов из Китая</p>
@@ -130,12 +143,12 @@
             <p class="section__lead">Можно передать всю перевозку или согласовать только необходимые этапы.</p>
           </div>
           <ol class="route-steps">
-            <li class="route-step"><span class="route-step__runner" aria-hidden="true"></span><span class="route-step__number">01</span><img class="route-step__icon" src="/icons/model/clipboard-text.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Получаем параметры груза</h3><p>Тип, вес, объём, максимальные габариты, адреса и фотографии или спецификацию.</p></li>
-            <li class="route-step"><span class="route-step__runner" aria-hidden="true"></span><span class="route-step__number">02</span><img class="route-step__icon" src="/icons/model/phone-call.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Связываемся с поставщиком</h3><p>При необходимости помогаем с выкупом товара и переводом денег в Китай.</p></li>
-            <li class="route-step"><span class="route-step__runner" aria-hidden="true"></span><span class="route-step__number">03</span><img class="route-step__icon" src="/icons/model/package.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Забираем груз</h3><p>Организуем забор с адреса или приём на терминале в Шэньчжэне.</p></li>
-            <li class="route-step"><span class="route-step__runner" aria-hidden="true"></span><span class="route-step__number">04</span><img class="route-step__icon" src="/icons/model/truck.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Подбираем перевозку</h3><p>Железная дорога, автомобильный транспорт или авиа в зависимости от задачи.</p></li>
-            <li class="route-step"><span class="route-step__runner" aria-hidden="true"></span><span class="route-step__number">05</span><img class="route-step__icon" src="/icons/model/stamp.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Проводим оформление</h3><p>Доступно оформление полностью или отдельные таможенные услуги.</p></li>
-            <li class="route-step"><span class="route-step__runner" aria-hidden="true"></span><span class="route-step__number">06</span><img class="route-step__icon" src="/icons/model/map-pin-line.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Доставляем в России</h3><p>До терминала или конечного адреса.</p></li>
+            <li class="route-step"><span class="route-step__number">01</span><img class="route-step__icon" src="/icons/model/clipboard-text.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Получаем параметры груза</h3><p>Тип, вес, объём, максимальные габариты, адреса и фотографии или спецификацию.</p></li>
+            <li class="route-step"><span class="route-step__number">02</span><img class="route-step__icon" src="/icons/model/phone-call.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Связываемся с поставщиком</h3><p>При необходимости помогаем с выкупом товара и переводом денег в Китай.</p></li>
+            <li class="route-step"><span class="route-step__number">03</span><img class="route-step__icon" src="/icons/model/package.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Забираем груз</h3><p>Организуем забор с адреса или приём на терминале в Шэньчжэне.</p></li>
+            <li class="route-step"><span class="route-step__number">04</span><img class="route-step__icon" src="/icons/model/truck.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Подбираем перевозку</h3><p>Железная дорога, автомобильный транспорт или авиа в зависимости от задачи.</p></li>
+            <li class="route-step"><span class="route-step__number">05</span><img class="route-step__icon" src="/icons/model/stamp.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Проводим оформление</h3><p>Доступно оформление полностью или отдельные таможенные услуги.</p></li>
+            <li class="route-step"><span class="route-step__number">06</span><img class="route-step__icon" src="/icons/model/map-pin-line.svg" alt="" width="42" height="42" loading="lazy" decoding="async" aria-hidden="true" /><h3>Доставляем в России</h3><p>До терминала или конечного адреса.</p></li>
           </ol>
           <button class="button button--outline" type="button" data-lead-open data-lead-title="Передать параметры груза">Передать параметры груза <span aria-hidden="true">→</span></button>
         </div>
@@ -167,6 +180,38 @@
             </div>
           </div>
           <div class="section__footer-line"><p>Точный срок зависит от маршрута, груза, оформления и дополнительных операций.</p><button class="text-action" type="button" data-lead-open data-lead-title="Подобрать способ доставки">Подобрать способ доставки <span aria-hidden="true">→</span></button></div>
+        </div>
+      </section>
+
+      <section class="section fit-section" id="fit" aria-labelledby="fit-title">
+        <div class="section__container fit-section__layout">
+          <div class="fit-intro">
+            <p class="section-kicker"><span aria-hidden="true"></span>Подбор схемы</p>
+            <h2 id="fit-title">Что подойдёт под ваш груз</h2>
+            <p class="section__lead">Задайте примерные габариты и вес — покажем, какая схема перевозки обычно подходит для таких параметров.</p>
+          </div>
+
+          <div class="fit-stage">
+            <div class="fit-scene" aria-hidden="true">
+              <span class="fit-scene__mount" data-fit-mount><img class="fit-scene__transport" data-fit-transport src="/icons/model/shipping-container.svg" alt="" width="128" height="128" loading="lazy" decoding="async" /></span>
+              <img class="fit-scene__figure" src="/icons/model/figure.svg" alt="" width="128" height="128" loading="lazy" decoding="async" />
+            </div>
+            <p class="fit-result" role="status" aria-live="polite"><strong data-fit-name>Контейнер 20 футов</strong><span data-fit-note>Стандартная схема для компактных и умеренно тяжёлых грузов.</span></p>
+          </div>
+
+          <div class="fit-controls">
+            <label class="fit-control">
+              <span class="fit-control__head"><span>Длина груза</span><output data-fit-length-out>5,5 м</output></span>
+              <input type="range" min="0.5" max="20" step="0.1" value="5.5" data-fit-length aria-label="Наибольшая длина груза в метрах" />
+            </label>
+            <label class="fit-control">
+              <span class="fit-control__head"><span>Вес груза</span><output data-fit-weight-out>8,0 т</output></span>
+              <input type="range" min="0.1" max="40" step="0.1" value="8" data-fit-weight aria-label="Вес груза в тоннах" />
+            </label>
+            <p class="engraved">Подбор ориентировочный</p>
+            <p class="fit-disclaimer">Транспорт и схема оформления подтверждаются логистом после проверки габаритов, маршрута и требований к грузу.</p>
+            <button class="button button--primary" type="button" data-lead-open data-fit-submit data-lead-title="Рассчитать этот маршрут">Рассчитать этот маршрут <span aria-hidden="true">→</span></button>
+          </div>
         </div>
       </section>
 

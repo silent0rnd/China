@@ -1,6 +1,9 @@
 import './styles/main.css'
 import anime from 'animejs'
 import { initCursorMotion } from './motion/cursor.js'
+import { ASSEMBLY_EASING, assemble, assemblyVector, bumpTable, clearInline, spatialDelay } from './motion/assembly.js'
+import { initRouteDiorama } from './motion/route.js'
+import { initCargoFit } from './motion/cargo-fit.js'
 
 const menuButton = document.querySelector('.menu-toggle')
 const mobileMenu = document.querySelector('.mobile-menu')
@@ -41,80 +44,6 @@ function initHeroMotion() {
     direction: 'alternate',
     loop: true,
     easing: 'easeInOutSine',
-  })
-}
-
-const ASSEMBLY_EASING = 'cubicBezier(.16, 1, .3, 1)'
-
-/**
- * Изометрический вектор, вдоль которого детали «прилетают» на стол.
- * Берётся из тех же токенов, что и геометрия макета в CSS.
- */
-function assemblyVector() {
-  const styles = window.getComputedStyle(document.documentElement)
-  const root = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16
-  const toPx = (value, fallback) => {
-    const parsed = parseFloat(value)
-    return Number.isFinite(parsed) ? parsed * root : fallback
-  }
-
-  return {
-    x: toPx(styles.getPropertyValue('--iso-vector-x'), 26),
-    y: toPx(styles.getPropertyValue('--iso-vector-y'), 15),
-  }
-}
-
-/**
- * Задержки по пространственному положению, а не по порядку в DOM:
- * сборка идёт от левого верхнего угла к правому нижнему, как если бы
- * детали расставляли рукой.
- */
-function spatialDelay(elements, step = 62, start = 0) {
-  const ranking = new Map()
-
-  ;[...elements]
-    .map((element) => {
-      const rect = element.getBoundingClientRect()
-      return { element, score: rect.top * 1.6 + rect.left }
-    })
-    .sort((a, b) => a.score - b.score)
-    .forEach(({ element }, index) => ranking.set(element, start + index * step))
-
-  return (element) => ranking.get(element) ?? start
-}
-
-/** Убирает инлайн-стили, чтобы дальше работали CSS-состояния. */
-function clearInline(elements) {
-  elements.forEach((element) => {
-    element.style.removeProperty('opacity')
-    element.style.removeProperty('transform')
-  })
-}
-
-/**
- * Общая грамматика появления: деталь прилетает вдоль изометрической оси,
- * слегка уменьшенная, и встаёт на стол с коротким овершутом.
- */
-function assemble(targets, { step = 62, start = 0, duration = 620, complete } = {}) {
-  const elements = [...targets]
-  if (!elements.length) return null
-
-  const vector = assemblyVector()
-  const delayFor = spatialDelay(elements, step, start)
-
-  return anime({
-    targets: elements,
-    opacity: [0, 1],
-    translateX: [-vector.x, 0],
-    translateY: [-vector.y, 0],
-    scale: [0.965, 1],
-    delay: (element) => delayFor(element),
-    duration,
-    easing: ASSEMBLY_EASING,
-    complete: () => {
-      clearInline(elements)
-      complete?.()
-    },
   })
 }
 
@@ -256,6 +185,37 @@ function initSectionMotion() {
   sections.forEach((section) => observer.observe(section))
 }
 
+/**
+ * Пасхалка: три клика по знаку логотипа — «по столу стукнули»,
+ * и все детали макета подпрыгивают. Клик по самому логотипу при этом
+ * продолжает работать как переход на первый экран.
+ */
+function initTableBump() {
+  const mark = document.querySelector('.brand__mark')
+  if (!mark || reducedMotionQuery.matches) return
+
+  let clicks = 0
+  let timer = 0
+  let running = false
+
+  mark.addEventListener('click', () => {
+    clicks += 1
+    window.clearTimeout(timer)
+    timer = window.setTimeout(() => { clicks = 0 }, 1500)
+
+    if (clicks < 3 || running) return
+    clicks = 0
+    running = true
+
+    const parts = document.querySelectorAll('.cargo-card, .cargo-type, .route-step, .delivery-card, .faq-list details, .contact-actions > a')
+    bumpTable(parts, { step: 22 })
+    // Иконки-детали подпрыгивают следом, чуть позже плит.
+    bumpTable(document.querySelectorAll('.cargo-type__icon img, .route-step__icon, .delivery-card__visual img'), { step: 18 })
+
+    window.setTimeout(() => { running = false }, 1600)
+  })
+}
+
 function initHeaderState() {
   if (!header) return
 
@@ -316,6 +276,13 @@ function openLeadDialog(trigger) {
   dialogTitle.textContent = trigger.dataset.leadTitle || 'Получить расчёт перевозки'
   leadForm?.reset()
   if (leadStatus) leadStatus.textContent = ''
+  // Подбор схемы передаёт готовое описание груза, чтобы посетителю
+  // не пришлось набирать заново то, что он уже задал ползунками.
+  const prefill = trigger.dataset.leadCargo
+  if (prefill) {
+    const cargoField = leadForm?.querySelector('[name="cargo"]')
+    if (cargoField) cargoField.value = prefill
+  }
   dialog.showModal()
   dialog.querySelector('input')?.focus()
 }
@@ -393,3 +360,6 @@ initSectionMotion()
 initHeaderState()
 initFaqBehavior()
 initCursorMotion()
+initRouteDiorama()
+initTableBump()
+initCargoFit()

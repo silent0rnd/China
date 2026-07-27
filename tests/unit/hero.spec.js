@@ -71,6 +71,43 @@ describe('hero checkpoint', () => {
     expect(mainScript).toContain('deliveryTimeline')
   })
 
+  it('drives the route diorama with one scroll-linked truck instead of per-step pulses', () => {
+    const routeScript = readFileSync(new URL('../../src/motion/route.js', import.meta.url), 'utf8')
+    expect(page).not.toContain('route-step__runner')
+    expect(page).toContain('class="route-steps"')
+    expect(routeScript).toContain('getPointAtLength')
+    // Маска обязана быть в userSpaceOnUse: на одной строке станций дорога —
+    // горизонтальная линия с нулевой высотой bbox, и objectBoundingBox её скрывает.
+    expect(routeScript).toContain("mask.setAttribute('maskUnits', 'userSpaceOnUse')")
+    expect(routeScript).toContain('prefers-reduced-motion: reduce')
+  })
+
+  it('offers the cargo fit block without promising terms and prefills the lead form', () => {
+    const fitScript = readFileSync(new URL('../../src/motion/cargo-fit.js', import.meta.url), 'utf8')
+    const mainScript = readFileSync(new URL('../../src/main.js', import.meta.url), 'utf8')
+    expect(page).toContain('id="fit"')
+    expect(page).toContain('data-fit-length')
+    expect(page).toContain('data-fit-weight')
+    // Статическая разметка должна совпадать с первым состоянием подбора.
+    expect(page).toContain('value="5.5" data-fit-length')
+    expect(page).toContain('Контейнер 20 футов')
+    // Блок не обещает сроков и стоимости.
+    expect(page).toContain('подтверждаются логистом после проверки')
+    expect(fitScript).not.toMatch(/руб|₽|гарант/i)
+    expect(mainScript).toContain('dataset.leadCargo')
+    expect(existsSync(new URL('../../public/icons/model/lowbed-platform.svg', import.meta.url))).toBe(true)
+    expect(existsSync(new URL('../../public/icons/model/figure.svg', import.meta.url))).toBe(true)
+  })
+
+  it('keeps hero lights anchored to the image frame and the table-bump easter egg', () => {
+    const styles = readFileSync(new URL('../../src/styles/main.css', import.meta.url), 'utf8')
+    const mainScript = readFileSync(new URL('../../src/main.js', import.meta.url), 'utf8')
+    expect(page).toContain('hero__glow-frame')
+    // Кадр повторяет object-fit: cover, иначе огни уползают с фур.
+    expect(styles).toContain('aspect-ratio: 1586 / 992')
+    expect(mainScript).toContain('initTableBump')
+  })
+
   it('builds relative assets and deploys only the Vite output to GitHub Pages', () => {
     expect(viteConfig).toContain("base: './'")
     expect(pagesWorkflow).toContain('actions/configure-pages@v5')
