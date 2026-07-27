@@ -296,6 +296,8 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 .site-footer__grid a:hover, .site-footer__grid button:hover { color: var(--text-primary); }
 .site-footer__grid button { width: fit-content; padding: 0; border: 0; color: var(--text-secondary); background: transparent; font-size: 0.9rem; text-align: left; }
 .site-footer__label { margin-bottom: 0.4rem !important; color: var(--text-muted); font: 500 0.68rem/1 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+.site-footer__grid > div > a, .site-footer__grid > div > button { display: flex; align-items: center; min-height: 2.75rem; }
+.brand { min-height: 2.75rem; }
 
 .lightbox { width: min(100% - 1.5rem, 78rem); max-height: min(100dvh - 1.5rem, 58rem); margin: auto; padding: 0; border: var(--line); background: var(--background-primary); box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.65); }
 .lightbox::backdrop { background: rgba(5, 6, 8, 0.88); }
