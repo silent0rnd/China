@@ -13,8 +13,8 @@ describe('hero checkpoint', () => {
   })
 
   it('uses separate clean desktop and mobile scene assets behind real hero controls', () => {
-    expect(page).toContain('hero-background-desktop-minimal.png')
-    expect(page).toContain('hero-background-mobile.png')
+    expect(page).toContain('hero-background-desktop-minimal.webp')
+    expect(page).toContain('hero-background-mobile.webp')
     expect(page).not.toContain('hero__reference-visual')
     expect(page).not.toContain('hero__semantic-layer')
   })
@@ -47,8 +47,8 @@ describe('hero checkpoint', () => {
   })
 
   it('keeps the compact icon categories and simplified post-hero structure', () => {
-    expect(page).toContain('/icons/model/bulldozer.svg')
-    expect(page).toContain('/icons/model/shipping-container.svg')
+    expect(page).toContain('/icons/model/bulldozer.webp')
+    expect(page).toContain('/icons/model/shipping-container.webp')
     expect(page).toContain('Маршрут под ключ')
     expect(page).toContain('<h2 id="contacts-title">Контакты</h2>')
     expect(page.indexOf('id="faq"')).toBeLessThan(page.indexOf('id="contacts"'))
@@ -62,11 +62,11 @@ describe('hero checkpoint', () => {
     const mainScript = readFileSync(new URL('../../src/main.js', import.meta.url), 'utf8')
     expect(page).toContain('class="delivery-corridor"')
     expect(page).toContain('class="delivery-track__progress"')
-    expect(page).toContain('/icons/model/truck.svg')
-    expect(page).toContain('/icons/model/train.svg')
-    expect(page).toContain('/icons/model/airplane-in-flight.svg')
-    expect(existsSync(new URL('../../public/icons/model/train.svg', import.meta.url))).toBe(true)
-    expect(existsSync(new URL('../../public/icons/model/airplane-in-flight.svg', import.meta.url))).toBe(true)
+    expect(page).toContain('/icons/model/truck.webp')
+    expect(page).toContain('/icons/model/train.webp')
+    expect(page).toContain('/icons/model/airplane-in-flight.webp')
+    expect(existsSync(new URL('../../public/icons/model/train.webp', import.meta.url))).toBe(true)
+    expect(existsSync(new URL('../../public/icons/model/airplane-in-flight.webp', import.meta.url))).toBe(true)
     expect(mainScript).toContain("section.matches('.delivery-section')")
     expect(mainScript).toContain('deliveryTimeline')
   })
@@ -95,8 +95,8 @@ describe('hero checkpoint', () => {
     expect(page).toContain('подтверждаются логистом после проверки')
     expect(fitScript).not.toMatch(/руб|₽|гарант/i)
     expect(mainScript).toContain('dataset.leadCargo')
-    expect(existsSync(new URL('../../public/icons/model/lowbed-platform.svg', import.meta.url))).toBe(true)
-    expect(existsSync(new URL('../../public/icons/model/figure.svg', import.meta.url))).toBe(true)
+    expect(existsSync(new URL('../../public/icons/model/lowbed-platform.webp', import.meta.url))).toBe(true)
+    expect(existsSync(new URL('../../public/icons/model/figure.webp', import.meta.url))).toBe(true)
   })
 
   it('keeps hero lights anchored to the image frame and the table-bump easter egg', () => {

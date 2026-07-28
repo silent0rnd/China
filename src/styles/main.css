@@ -483,17 +483,17 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 .cargo-type { display: grid; align-content: start; min-height: 12.5rem; padding: 1.25rem; overflow: hidden; }
 /* Риска маркировки в углу плиты. */
 .cargo-type::after { position: absolute; z-index: 2; right: 1rem; bottom: 1rem; width: 2.2rem; height: 0.0625rem; content: ''; background: var(--accent); opacity: 0.45; transform: scaleX(0.45); transform-origin: right; transition: opacity 260ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
-/* Площадка, на которой стоит деталь: утоплена в плиту. */
-.cargo-type__icon { z-index: 1; display: grid; width: 3.6rem; height: 3.6rem; place-items: center; border-radius: 0.14rem; background: rgba(0, 0, 0, 0.28); box-shadow: var(--model-groove); color: #a9b0b5; transition: box-shadow 300ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
-.cargo-type__icon img { width: 2.7rem; height: 2.7rem; filter: drop-shadow(0 0.2rem 0.35rem rgba(0, 0, 0, 0.7)); transition: filter 280ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
+/* Деталь стоит прямо на плите: у рендеров запечена собственная контактная
+   тень, поэтому утопленная площадка под ними читалась бы второй плоскостью. */
+.cargo-type__icon { z-index: 1; display: grid; width: 6.6rem; height: 6.6rem; place-items: center; transition: transform 320ms cubic-bezier(.16, 1, .3, 1); }
+.cargo-type__icon img { width: 100%; height: 100%; object-fit: contain; transition: filter 280ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1); }
 .cargo-type__content { position: relative; z-index: 1; max-width: 27rem; margin-top: 1.6rem; }
 .cargo-type h3 { font-size: clamp(1.2rem, 1.55vw, 1.55rem); }
 .cargo-type p { margin: 0.72rem 0 0; color: #aeb4b8; font-size: 0.92rem; line-height: 1.5; }
 .cargo-type:hover, .cargo-type:focus-within { z-index: 2; }
 .cargo-type:hover::after, .cargo-type:focus-within::after { opacity: 1; transform: scaleX(1); }
-/* Лампа поднимается над деталью — тень под ней удлиняется. */
-.cargo-type:hover .cargo-type__icon, .cargo-type:focus-within .cargo-type__icon { box-shadow: var(--model-groove), 0 0 1.6rem rgba(var(--light-warm), 0.06); }
-.cargo-type:hover .cargo-type__icon img, .cargo-type:focus-within .cargo-type__icon img { filter: brightness(1.25) drop-shadow(0 0.42rem 0.6rem rgba(0, 0, 0, 0.78)); transform: translateY(-0.16rem) scale(1.05); }
+/* Лампа поднимается над деталью — она чуть приподнимается и светлеет. */
+.cargo-type:hover .cargo-type__icon img, .cargo-type:focus-within .cargo-type__icon img { filter: brightness(1.18); transform: translateY(-0.18rem) scale(1.05); }
 
 .route-section { background: transparent; }
 .route-section__head { max-width: 60rem; }
@@ -518,22 +518,22 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 .route-road__reveal { fill: none; stroke: #fff; stroke-width: 22; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Фура идёт по дороге под управлением прокрутки. */
-.route-truck { position: absolute; z-index: 4; top: 0; left: 0; width: 3.6rem; height: 3.6rem; opacity: 0; filter: drop-shadow(0 0.3rem 0.5rem rgba(0, 0, 0, 0.85)); pointer-events: none; transition: opacity 300ms ease; will-change: transform; }
+.route-truck { position: absolute; z-index: 4; top: 0; left: 0; width: 4.4rem; height: 4.4rem; opacity: 0; pointer-events: none; transition: opacity 300ms ease; will-change: transform; }
 
 /* Станция включается в момент, когда фура до неё доехала. */
 .route-step.is-lit::before { opacity: 1; box-shadow: 0 0 0 0.22rem rgba(0, 0, 0, 0.55), 0 0 1.4rem rgba(229, 75, 69, 0.55); }
 .route-step.is-lit .route-step__number { color: #c7ccd0; }
-.route-step.is-lit .route-step__icon { filter: brightness(1.14) drop-shadow(0 0.32rem 0.5rem rgba(0, 0, 0, 0.78)); }
+.route-step.is-lit .route-step__icon { filter: brightness(1.12); }
 
 .route-step__number { display: block; margin-bottom: 1.2rem; color: var(--text-muted); font: 400 0.82rem/1 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.08em; transition: color 260ms ease; }
-.route-step__icon { display: block; width: 3.5rem; height: 3.5rem; margin-bottom: 1.25rem; filter: drop-shadow(0 0.22rem 0.4rem rgba(0, 0, 0, 0.72)); transform-origin: left bottom; transition: filter 280ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
+.route-step__icon { display: block; width: 6rem; height: 6rem; margin-bottom: 0.9rem; object-fit: contain; transform-origin: left bottom; transition: filter 280ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
 .route-step h3 { font-size: clamp(1.15rem, 1.45vw, 1.55rem); transition: color 260ms ease, transform 340ms cubic-bezier(.16, 1, .3, 1); }
 .route-step p { margin: 0.9rem 0 0; color: var(--text-secondary); font-size: 0.94rem; line-height: 1.55; }
 /* Hover зажигает фонарь именно этой станции. */
 .route-step:hover, .route-step:focus-within { z-index: 2; }
 .route-step:hover::before, .route-step:focus-within::before { opacity: 1; box-shadow: 0 0 0 0.22rem rgba(0, 0, 0, 0.55), 0 0 1.5rem rgba(229, 75, 69, 0.6); }
 .route-step:hover .route-step__number, .route-step:focus-within .route-step__number { color: #c7ccd0; }
-.route-step:hover .route-step__icon, .route-step:focus-within .route-step__icon { filter: brightness(1.22) drop-shadow(0 0.45rem 0.65rem rgba(0, 0, 0, 0.8)); transform: translateY(-0.18rem) scale(1.06); }
+.route-step:hover .route-step__icon, .route-step:focus-within .route-step__icon { filter: brightness(1.18); transform: translateY(-0.2rem) scale(1.06); }
 .route-step:hover h3, .route-step:focus-within h3 { color: #fff; }
 
 .delivery-section { background: transparent; }
@@ -552,8 +552,8 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 .delivery-card__number { color: var(--text-muted); font: 400 1.35rem/1 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.04em; transition: color 260ms ease; }
 .delivery-card__node { position: absolute; z-index: 4; top: 1.72rem; left: 1.64rem; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0.24rem rgba(0, 0, 0, 0.6), 0 0 0.8rem rgba(169, 43, 39, 0.35); opacity: 0.55; transition: opacity 300ms ease, box-shadow 320ms ease; }
 /* Площадка, на которой стоит транспорт. */
-.delivery-card__visual { position: absolute; z-index: 2; top: 1.25rem; right: 1.3rem; display: grid; width: 4.8rem; height: 4.8rem; place-items: center; border-radius: 0.14rem; background: rgba(0, 0, 0, 0.26); box-shadow: var(--model-groove); transition: box-shadow 320ms ease; }
-.delivery-card__visual img { width: 3.1rem; height: 3.1rem; filter: drop-shadow(0 0.24rem 0.4rem rgba(0, 0, 0, 0.72)); transition: filter 280ms ease, transform 620ms cubic-bezier(.16, 1, .3, 1); }
+.delivery-card__visual { position: absolute; z-index: 2; top: 0.4rem; right: 0.4rem; display: grid; width: 11.5rem; height: 11.5rem; place-items: center; }
+.delivery-card__visual img { width: 100%; height: 100%; object-fit: contain; transition: filter 280ms ease, transform 620ms cubic-bezier(.16, 1, .3, 1); }
 .delivery-card__body { position: relative; z-index: 1; align-self: end; padding-top: 4.8rem; }
 .delivery-card__term { display: inline-flex; align-items: center; margin: 0 0 1rem; padding: 0.3rem 0.6rem; border-radius: 0.12rem; background: rgba(0, 0, 0, 0.3); box-shadow: var(--model-groove); color: #c6a87f; font: 500 0.72rem/1.4 'IBM Plex Mono', Consolas, monospace; letter-spacing: 0.06em; transition: color 260ms ease; }
 .delivery-card h3 { max-width: 16ch; transition: color 260ms ease; }
@@ -562,8 +562,8 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
 .delivery-card:hover::after, .delivery-card:focus-within::after { opacity: 1; }
 .delivery-card:hover .delivery-card__number, .delivery-card:focus-within .delivery-card__number { color: #c8cdd1; }
 .delivery-card:hover .delivery-card__node, .delivery-card:focus-within .delivery-card__node { opacity: 1; box-shadow: 0 0 0 0.24rem rgba(0, 0, 0, 0.6), 0 0 1.5rem rgba(229, 75, 69, 0.58); }
-.delivery-card:hover .delivery-card__visual, .delivery-card:focus-within .delivery-card__visual { box-shadow: var(--model-groove), 0 0 1.8rem rgba(var(--light-warm), 0.07); }
-.delivery-card:hover .delivery-card__visual img, .delivery-card:focus-within .delivery-card__visual img { filter: brightness(1.22) drop-shadow(0 0.45rem 0.65rem rgba(0, 0, 0, 0.8)); transform: translateX(0.5rem); }
+
+.delivery-card:hover .delivery-card__visual img, .delivery-card:focus-within .delivery-card__visual img { filter: brightness(1.18); transform: translateX(0.5rem); }
 .delivery-card:hover .delivery-card__term, .delivery-card:focus-within .delivery-card__term { color: #ddc398; }
 .delivery-card:hover h3, .delivery-card:focus-within h3 { color: #fff; }
 
@@ -595,16 +595,16 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
    поэтому их модельные единицы совпадают. Ставим их в общую систему
    координат и разводим сдвигом в процентах от этой же ширины —
    так сопоставление размеров остаётся честным на любом экране. */
-.fit-scene { position: relative; min-height: 13rem; }
+.fit-scene { position: relative; min-height: 17rem; }
 /* Транспорт растёт вместе с грузом, фигурка остаётся неизменной —
    именно их сопоставление и передаёт масштаб.
    Масштаб живёт на обёртке: смену детали анимирует anime.js через inline
    transform самой картинки, и два владельца transform не должны совпадать. */
 .fit-scene__mount { position: absolute; bottom: 0.5rem; left: 50%; display: block; width: clamp(7rem, 18vw, 11rem); transform: translateX(-72%) scale(var(--fit-scale, 1)); transform-origin: center bottom; transition: transform 420ms cubic-bezier(.16, 1, .3, 1); }
-.fit-scene__transport { display: block; width: 100%; height: auto; filter: drop-shadow(0 0.5rem 0.9rem rgba(0, 0, 0, 0.8)); }
+.fit-scene__transport { display: block; width: 100%; height: auto; }
 /* Фигурка рисуется в тех же модельных единицах, что и транспорт, поэтому
    её ширина в CSS равна ширине транспорта: соотношение задано в геометрии. */
-.fit-scene__figure { position: absolute; bottom: 0.5rem; left: 50%; display: block; width: clamp(7rem, 18vw, 11rem); height: auto; transform: translateX(var(--fit-figure-x, -14%)); transition: transform 420ms cubic-bezier(.16, 1, .3, 1); filter: drop-shadow(0 0.3rem 0.5rem rgba(0, 0, 0, 0.78)); }
+.fit-scene__figure { position: absolute; bottom: 0.5rem; left: 50%; display: block; width: clamp(7rem, 18vw, 11rem); height: auto; transform: translateX(var(--fit-figure-x, -14%)) scale(0.43); transform-origin: center bottom; transition: transform 420ms cubic-bezier(.16, 1, .3, 1); }
 .fit-result { display: grid; gap: 0.4rem; margin: 0; padding-top: 1.1rem; border-top: 0.0625rem solid rgba(var(--light-warm), 0.08); }
 .fit-result strong { font-size: clamp(1.15rem, 1.7vw, 1.5rem); font-weight: 500; letter-spacing: -0.02em; }
 .fit-result span { color: var(--text-secondary); font-size: 0.94rem; line-height: 1.55; }
@@ -708,8 +708,7 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .delivery-grid { grid-template-columns: repeat(3, 1fr); }
   .delivery-card { min-height: 23rem; padding: 1.5rem 1.4rem 1.7rem; }
   .delivery-card__node { top: 7.81rem; left: 1.42rem; }
-  .delivery-card__visual { top: 1.45rem; right: 1.4rem; width: 5.2rem; height: 5.2rem; }
-  .delivery-card__visual img { width: 3.2rem; height: 3.2rem; }
+  .delivery-card__visual { top: 0.9rem; right: 1rem; width: 11.5rem; height: 11.5rem; }
   .delivery-card__body { padding-top: 8rem; }
   .site-footer__grid { grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2rem; }
 }
@@ -726,7 +725,7 @@ h3 { margin: 0; font-size: clamp(1.3rem, 1.8vw, 1.8rem); font-weight: 500; line-
   .cargo-section__layout .section__intro { position: sticky; top: 7rem; }
   .cargo-gallery { columns: 3; }
   .cargo-types__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .cargo-type { min-height: 13rem; }
+  .cargo-type { min-height: 17rem; }
   .route-steps { grid-template-columns: repeat(3, 1fr); }
   .route-step { min-height: 19rem; padding: 2.5rem 1.45rem 1.45rem; }
   .route-step__number { margin-bottom: 1.25rem; }

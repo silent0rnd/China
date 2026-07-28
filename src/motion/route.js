@@ -94,7 +94,7 @@ export function initRouteDiorama() {
 
   const truck = document.createElement('img')
   truck.className = 'route-truck'
-  truck.src = '/icons/model/truck.svg'
+  truck.src = '/icons/model/truck.webp'
   truck.alt = ''
   truck.setAttribute('aria-hidden', 'true')
   truck.width = 128

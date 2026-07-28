@@ -20,45 +20,57 @@ import { ASSEMBLY_EASING, assemblyVector } from './assembly.js'
  * ВНИМАНИЕ: пороги требуют подтверждения логистами заказчика.
  * Взяты по внутренним габаритам стандартных контейнеров:
  * 20 футов — около 5.9 м, 40 футов — около 12.0 м.
+ *
+ * `scale` — калибровка под реальные габариты. Иконки нормализованы так,
+ * что каждая занимает свой квадрат целиком, поэтому без множителя контейнер
+ * и коробка выглядели бы одинаково. Значения выведены из высоты объекта
+ * относительно контейнера 20 футов (2.59 м) с поправкой на пропорции
+ * отрисованного содержимого. Самолёт намеренно не в масштабе: он здесь
+ * обозначает способ доставки, а не габарит груза.
  */
 const SCHEMES = [
   {
     id: 'groupage',
+    scale: 0.415,
     maxLength: 1.5,
     maxWeight: 0.5,
-    icon: '/icons/model/package.svg',
+    icon: '/icons/model/package.webp',
     name: 'Сборный груз',
     note: 'Небольшие партии отправляются в составе сборного груза.',
   },
   {
     id: 'air',
+    scale: 1.35,
     maxLength: 3,
     maxWeight: 1.5,
-    icon: '/icons/model/airplane-in-flight.svg',
+    icon: '/icons/model/airplane-in-flight.webp',
     name: 'Авиаперевозка',
     note: 'Доступна для компактных и лёгких грузов, подходящих по условиям перевозки.',
   },
   {
     id: 'container-20',
+    scale: 0.95,
     maxLength: 5.9,
     maxWeight: 21,
-    icon: '/icons/model/shipping-container.svg',
+    icon: '/icons/model/shipping-container.webp',
     name: 'Контейнер 20 футов',
     note: 'Груз размещается в стандартном контейнере, доступны железная дорога и автоперевозка.',
   },
   {
     id: 'container-40',
+    scale: 1.25,
     maxLength: 12,
     maxWeight: 26,
-    icon: '/icons/model/shipping-container.svg',
+    icon: '/icons/model/shipping-container.webp',
     name: 'Контейнер 40 футов',
     note: 'Длинномерный груз в контейнере увеличенной длины, с доставкой до терминала или адреса.',
   },
   {
     id: 'oversize',
+    scale: 1.51,
     maxLength: Infinity,
     maxWeight: Infinity,
-    icon: '/icons/model/lowbed-platform.svg',
+    icon: '/icons/model/lowbed-platform.webp',
     name: 'Негабаритная перевозка',
     note: 'Для таких параметров маршрут, транспорт и разрешения подбираются индивидуально.',
   },
@@ -128,19 +140,20 @@ export function initCargoFit() {
     lengthInput.setAttribute('aria-valuetext', format(length, 'метра'))
     weightInput.setAttribute('aria-valuetext', format(weight, 'тонны'))
 
-    // Масштаб меняется непрерывно, а не ступенями по схемам: иначе
-    // движение ползунка внутри одной схемы ничего не делает на макете.
+    const scheme = pick(length, weight)
+
+    // Итоговый масштаб — калибровка схемы под реальные габариты, умноженная
+    // на непрерывную поправку от ползунка. Без второго множителя движение
+    // внутри одной схемы ничего не меняло бы на макете.
     const span = Number(lengthInput.max) - Number(lengthInput.min)
     const ratio = (length - Number(lengthInput.min)) / (span || 1)
-    const scale = 0.52 + ratio * 0.92
+    const scale = scheme.scale * (0.88 + ratio * 0.28)
     mount?.style.setProperty('--fit-scale', scale.toFixed(3))
 
     // Фигурка отходит вслед за правым краем растущего транспорта, иначе
-    // на максимуме он на неё наезжает. Множители выведены из геометрии
+    // на максимуме он на неё наезжает. Коэффициенты выведены из геометрии
     // сцены: mount сдвинут на -72% и масштабируется от центра низа.
-    figure?.style.setProperty('--fit-figure-x', `${((scale * 0.5 - 0.63) * 100).toFixed(1)}%`)
-
-    const scheme = pick(length, weight)
+    figure?.style.setProperty('--fit-figure-x', `${((scale * 0.5 - 0.594) * 100).toFixed(1)}%`)
 
     if (scheme.id !== current) {
       current = scheme.id

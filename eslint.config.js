@@ -23,6 +23,11 @@ export default [
       globals: {
         console: 'readonly',
         process: 'readonly',
+        Buffer: 'readonly',
+        // Обработка иконок выполняется внутри headless-браузера,
+        // поэтому в page.evaluate доступны браузерные глобальные объекты.
+        Image: 'readonly',
+        document: 'readonly',
       },
     },
   },
